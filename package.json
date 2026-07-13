@@ -1,6 +1,6 @@
 {
   "name": "com.sst-systems.configurators",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "displayName": "Configurators",
   "description": "Serializable, pooled, DI-ready system for gameplay rules. Covers modifications (one-shot effects on a context), instructions (contextless effects), conditions (boolean predicates with change notifications), and extensions (passive value carriers). All built from polymorphic inspector lists backed by StableRef.",
   "unity": "2021.3",
@@ -24,13 +24,33 @@
   "licensesUrl": "https://github.com/SST-Systems/Configurators/blob/main/LICENSE.md",
   "dependencies": {
     "com.sst-systems.pooling": "1.0.1",
-    "com.sst-systems.stableref": "1.0.1"
+    "com.sst-systems.stableref": "1.0.2"
   },
   "samples": [
     {
-      "displayName": "Zenject Integration",
-      "description": "Zenject DI container integration — ZenjectHandlerFactory and installer binding for ConfiguratorManager.",
-      "path": "Samples~/Zenject"
+      "displayName": "Instructions for Button",
+      "description": "A UI button that runs a designer-authored instruction chain on each pointer event (click, enter, exit, press), inline sync and async steps executed in order. Includes a ready-made scene.",
+      "path": "Samples~/Instructions for Button"
+    },
+    {
+      "displayName": "Modifications for Object",
+      "description": "Spawns objects and configures each one (color, size, rotation and more) by applying the same modification list to the spawned instance as context.",
+      "path": "Samples~/Modifications for Object"
+    },
+    {
+      "displayName": "Conditions for Visibility",
+      "description": "A real-time timer and toggles drive a StatefulWidget: conditions choose the active state and per-state instruction chains restyle the visuals - the Conditions and Instructions modules combined.",
+      "path": "Samples~/Conditions for Visibility"
+    },
+    {
+      "displayName": "Extensions for Config",
+      "description": "A currency config carries optional extensions (icon, display name, color); the view renders only the extensions that are present, with no changes to the config class.",
+      "path": "Samples~/Extensions for Config"
+    },
+    {
+      "displayName": "Zenject For Configurators",
+      "description": "Zenject DI container integration - ZenjectHandlerFactory and installer binding for ConfiguratorManager.",
+      "path": "Samples~/Zenject For Configurators"
     }
   ]
 }

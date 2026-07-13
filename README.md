@@ -9,14 +9,22 @@
 
 ---
 
-Design gameplay rules in the Inspector — no code changes to add or tweak behaviours. Conditions, effects, modifications, and extensions are all serializable, handler-pooled, and DI-ready.
+**Gameplay rules as data.** Describe a behaviour once as a small serializable class, then assemble, reorder, and combine those behaviours as a list right in the Inspector — the code that runs them never changes. Everything is serializable, handlers are pooled, and it works with any DI container.
+
+<p align="center">
+  <img src="Documentation~/hero.gif" alt="Assembling rules in the Inspector and running them" width="960">
+</p>
 
 ## Table Of Contents
 
 <details>
 <summary>Details</summary>
 
+- [Why](#why)
+- [Highlights](#highlights)
 - [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Samples](#samples)
 - [Concepts](#concepts)
 - [Setup](#setup)
   - [Creating managers](#creating-managers)
@@ -27,12 +35,60 @@ Design gameplay rules in the Inspector — no code changes to add or tweak behav
   - [Conditions](#conditions-module)
   - [Extensions](#extensions-module)
 - [Inspector](#inspector)
-- [Lifetime Contract](#lifetime-contract)
-  - [Binding lifecycle hooks](#binding-lifecycle-hooks)
-- [Under the Hood](#under-the-hood)
+- [Lifetime](#lifetime)
+- [Learn More](#learn-more)
 - [Bundled Utilities](#bundled-utilities)
 
 </details>
+
+---
+
+## Why
+
+Games constantly grow small behaviours: an effect applied to a unit on spawn, a tutorial step, a condition that shows a UI element, a parameter value on an item. The usual approaches — an `enum` + `switch`, a `MonoBehaviour` per behaviour, or a pile of boolean flags — blur quickly: every new behaviour needs a code change and a recompile, logic scatters across the project, and a game designer can't assemble a variant on their own.
+
+Configurators moves rule assembly into the Inspector. Each behaviour is its own small serializable class; in the Inspector they stack into a polymorphic list you can change without touching the consuming code.
+
+**Before** — a new behaviour means a new `case` and a recompile, logic packed into one switch:
+
+```csharp
+public enum BuffType { MaxHealth, Speed, Shield }
+
+public void ApplyBuff(Unit unit, BuffType type, float value)
+{
+    switch (type)
+    {
+        case BuffType.MaxHealth: unit.Health.SetMax(value); break;
+        case BuffType.Speed:     unit.Movement.Speed = value; break;
+        case BuffType.Shield:    unit.AddShield(value);       break;
+        // one more buff → edit this file and recompile
+    }
+}
+```
+
+**After** — a new behaviour means a new class; the consuming code never changes:
+
+```csharp
+[Serializable, StableRefCategory("Stats")]
+public class SetMaxHealth : Modification<Unit>
+{
+    public int Value;
+    public override void Apply(Unit unit) => unit.Health.SetMax(Value);
+}
+```
+
+Which buffs apply, in what order, with what parameters — all authored in the Inspector. Adding a new type is a class; assembling a specific set is a designer's job, not a programmer's.
+
+---
+
+## Highlights
+
+- **Rules in the Inspector, no code changes** — behaviours stack into polymorphic lists on top of `[SerializeReference]`; a new behaviour is a new class, the consuming code is untouched.
+- **Survives refactoring** — type references are held by [StableRef](https://github.com/SST-Systems/StableRef), so renaming or moving a class doesn't break assets you've already configured.
+- **Handlers are pooled** — runtime logic is taken from a pool and returned to it, with no allocations per run.
+- **Any DI** — handlers get their dependencies through your container (Zenject, VContainer, …) or a service locator; a ready-made Zenject integration ships as a sample.
+- **Async and cancellation out of the box** — steps that genuinely wait (asset load, delay, network request) are written as `async`; cancellation is bound to the object's lifetime.
+- **Four modules for different jobs** — Modifications (effects on a context), Instructions (context-free commands), Conditions (reactive predicates with composition), Extensions (value carriers).
 
 ---
 
@@ -50,6 +106,69 @@ Design gameplay rules in the Inspector — no code changes to add or tweak behav
 Unity 2021.3+
 
 > Optional Zenject integration is included as a sample — import it via `Window → Package Manager` → select Configurators → **Samples** tab.
+
+---
+
+## Quick Start
+
+A minimal end-to-end example on the Instructions module — from class to run. The other three modules work the same way.
+
+**1. Describe a behaviour** — a small serializable class:
+
+```csharp
+[Serializable, StableRefCategory("UI")]
+public class ChangeTextColor : Instruction
+{
+    [SerializeField] private Text target;
+    [SerializeField] private Color color = Color.white;
+
+    public override void Apply()
+    {
+        if (target)
+            target.color = color;
+    }
+}
+```
+
+**2. Put an `InstructionProcessor` on a component and assemble the list in the Inspector** — the typed dropdown lists all your behaviours:
+
+<p align="center">
+  <img src="Documentation~/samples/instructions.gif" alt="Assembling a button's instruction chain in the Inspector" width="800">
+</p>
+
+**3. Resolve once and run:**
+
+```csharp
+public class ButtonActions : MonoBehaviour
+{
+    [SerializeField] private InstructionProcessor instructions;
+
+    // Manager — create manually or get it from DI
+    private readonly IInstructionManager _manager = new InstructionManager();
+
+    private void Awake() => _manager.ResolveInstructions(instructions, lifetimeOwner: this);
+
+    // Hook to Button.onClick — plays the chain top to bottom (sync + async steps)
+    public void Run() => instructions.Apply();
+}
+```
+
+New steps are added in the Inspector, order is drag-and-drop; `ButtonActions` never changes. `lifetimeOwner: this` ties cleanup to the object — everything is released automatically when it's destroyed.
+
+---
+
+## Samples
+
+Runnable examples, one per module — import via `Window → Package Manager → Configurators → Samples`.
+
+| Sample | Module | What it shows |
+|---|---|---|
+| [Instructions for Button](Samples~/Instructions for Button/README.md) | Instructions | A UI button running a designer-authored chain per pointer event — sequential and async steps, cancellation. Ships with a scene. |
+| [Modifications for Object](Samples~/Modifications for Object/README.md) | Modifications | Spawns an image every second and configures each one via the same modification list applied as context — retune the look in the Inspector, spawner code unchanged. |
+| [Conditions for Visibility](Samples~/Conditions for Visibility/README.md) | Conditions | UI toggles drive a two-state panel through a controller — condition combinations pick the state, its instructions restyle it (Conditions + Instructions combined). |
+| [Extensions for Config](Samples~/Extensions for Config/README.md) | Extensions | A config carries optional extensions; the view renders only those present. |
+
+Plus [Zenject For Configurators](Samples~/Zenject For Configurators) — a ready `IHandlerFactory` and installer.
 
 ---
 
@@ -127,7 +246,7 @@ public class ConfiguratorsZenjectInstaller : MonoInstaller
 }
 ```
 
-Ready-made integration in [`Samples~/Zenject/`](Samples~/Zenject/).
+Ready-made integration in [`Samples~/Zenject For Configurators/`](Samples~/Zenject For Configurators/).
 
 ---
 
@@ -152,26 +271,9 @@ await processor.Apply(context);
 
 ### Modifications Module
 
-#### 1. What it solves
-
 Modifications apply effects to a context — a unit, an entity, any data object. Example use cases: configure actor stats on spawn, apply item effects to a player, alter level parameters. All logic is described in the Inspector with no code changes. Modifications run **sequentially**; each step can be synchronous or, when it needs to wait for something (load an asset, fetch a value), asynchronous — the next one starts only after the current finishes.
 
-#### 2. How to use
-
-Pick along two axes: **inline vs handler-based** (do you need injected dependencies?) and **sync vs async** (do you need to `await`?). Sync is the default and the lightest to write — reach for async only when a step must wait.
-
-- **Inline** — logic lives on the data class. Sync base `Modification<TContext>` (`void Apply`), async base `AsyncModification<TContext>` (`Task Apply`).
-- **Handler-based** — data and behaviour are split; the handler is created by the factory and pooled. Sync pair `ModificationData` + `ModificationHandler`, async pair `AsyncModificationData` + `AsyncModificationHandler`.
-
-The processor runs the list in order — sync entries inline, async entries awaited. If every entry is synchronous, the whole run completes synchronously.
-
-> **Recommendation.** Default to sync (`Modification` / `ModificationData`); switch to the async variants only when a step genuinely awaits.
-
-> **Cancellation.** Disposing the binding or destroying the `lifetimeOwner` cancels in-flight async runs. You can also pass your own token to `Apply`. Forward the token into every `await` inside your async modifications (and call `cancellationToken.ThrowIfCancellationRequested()` in loops), otherwise the current step runs to completion before it stops.
-
-> **Concurrency.** The processor keeps no per-run state, so one processor can be applied to many objects at once — e.g. `await Task.WhenAll(units.Select(u => modifications.Apply(u)))`. Each context's chain runs independently (and in order within itself). Safe as long as handlers keep no per-call state in fields — the context flows as a parameter, not stored.
-
-##### Inline — sync
+The simplest form — an inline modification with a synchronous `Apply`:
 
 ```csharp
 [Serializable]
@@ -183,6 +285,16 @@ public class SetMaxHealth : Modification<ActorUnit>
     public override void Apply(ActorUnit context) => context.GetAbility<HealthAbility>().SetMax(Value);
 }
 ```
+
+<details>
+<summary><b>All variants: inline / handler-based × sync / async</b></summary>
+
+Pick along two axes: **inline vs handler-based** (do you need injected dependencies?) and **sync vs async** (do you need to `await`?). Sync is the default and the lightest to write — reach for async only when a step must wait.
+
+- **Inline** — logic lives on the data class. Sync base `Modification<TContext>` (`void Apply`), async base `AsyncModification<TContext>` (`Task Apply`).
+- **Handler-based** — data and behaviour are split; the handler is created by the factory and pooled. Sync pair `ModificationData` + `ModificationHandler`, async pair `AsyncModificationData` + `AsyncModificationHandler`.
+
+The processor runs the list in order — sync entries inline, async entries awaited. If every entry is synchronous, the whole run completes synchronously.
 
 ##### Inline — async
 
@@ -243,7 +355,9 @@ public class ApplySkinHandler : AsyncModificationHandler<ApplySkin, ActorUnit>
 }
 ```
 
-#### 3. Usage example
+</details>
+
+**Running it:**
 
 ```csharp
 public class ActorSpawner : MonoBehaviour
@@ -268,7 +382,16 @@ public class ActorSpawner : MonoBehaviour
 }
 ```
 
-With manual control (`lifetimeOwner: null`):
+<details>
+<summary><b>Notes: cancellation, concurrency, manual lifetime, re-resolving</b></summary>
+
+> **Recommendation.** Default to sync (`Modification` / `ModificationData`); switch to the async variants only when a step genuinely awaits.
+
+> **Cancellation.** Disposing the binding or destroying the `lifetimeOwner` cancels in-flight async runs. You can also pass your own token to `Apply`. Forward the token into every `await` inside your async modifications (and call `cancellationToken.ThrowIfCancellationRequested()` in loops), otherwise the current step runs to completion before it stops.
+
+> **Concurrency.** The processor keeps no per-run state, so one processor can be applied to many objects at once — e.g. `await Task.WhenAll(units.Select(u => modifications.Apply(u)))`. Each context's chain runs independently (and in order within itself). Safe as long as handlers keep no per-call state in fields — the context flows as a parameter, not stored.
+
+Manual control (`lifetimeOwner: null`):
 
 ```csharp
 private IDisposable _binding;
@@ -284,36 +407,21 @@ private void Cleanup()
 }
 ```
 
-#### 4. Additional methods
-
 **Re-resolving** — calling `ResolveModifications` on an already-resolved processor automatically disposes the previous binding and creates a new one. Use this to transfer control to a new `lifetimeOwner`:
 
 ```csharp
 _modificationManager.ResolveModifications(processor, lifetimeOwner: newOwner);
 ```
 
+</details>
+
 ---
 
 ### Instructions Module
 
-#### 1. What it solves
-
 Instructions are commands with no context. Targets are stored as inspector references on the data class. Instructions run sequentially — each one starts only after the previous finishes. A step can be synchronous or asynchronous (delays, awaits, cancellation). Typical use cases: level event sequences, animation chains, tutorial steps, delays between actions.
 
-#### 2. How to use
-
-Pick along two axes: **inline vs handler-based** (do you need injected dependencies?) and **sync vs async** (do you need to `await`?). Sync is the default.
-
-- **Inline** — logic on the data class. Sync base `Instruction` (`void Apply()`), async base `AsyncInstruction` (`Task Apply(ct)`).
-- **Handler-based** — data and behaviour split; the handler is created by the factory and pooled. Sync pair `InstructionData` + `InstructionHandler`, async pair `AsyncInstructionData` + `AsyncInstructionHandler`.
-
-The processor runs the list in order — sync entries inline, async entries awaited.
-
-> **Recommendation.** Default to sync (`Instruction` / `InstructionData`); use the async variants when a step must wait.
-
-> **Cancellation.** When the binding is disposed or `lifetimeOwner` is destroyed, the running chain is cancelled; a repeat `Apply` cancels the previous run. In your async instructions, forward the token into every `await` (`Task.Delay(ms, cancellationToken)`, `UniTask.Delay(...)`, etc.) and call `cancellationToken.ThrowIfCancellationRequested()` in loops — otherwise the current step runs to completion before it stops.
-
-##### Inline — sync
+The simplest form — an inline instruction with a synchronous `Apply`:
 
 ```csharp
 [Serializable]
@@ -326,6 +434,14 @@ public class GameObjectSetActive : Instruction
     public override void Apply() => Object.SetActive(Value);
 }
 ```
+
+<details>
+<summary><b>All variants: inline / handler-based × sync / async</b></summary>
+
+Pick along two axes: **inline vs handler-based** (do you need injected dependencies?) and **sync vs async** (do you need to `await`?). Sync is the default.
+
+- **Inline** — logic on the data class. Sync base `Instruction` (`void Apply()`), async base `AsyncInstruction` (`Task Apply(ct)`).
+- **Handler-based** — data and behaviour split; the handler is created by the factory and pooled. Sync pair `InstructionData` + `InstructionHandler`, async pair `AsyncInstructionData` + `AsyncInstructionHandler`.
 
 ##### Inline — async
 
@@ -407,7 +523,9 @@ public class PlaySoundHandler : AsyncInstructionHandler<PlaySound>
 }
 ```
 
-#### 3. Usage example
+</details>
+
+**Running it:**
 
 ```csharp
 public class TutorialController : MonoBehaviour
@@ -450,7 +568,12 @@ public class TutorialController : MonoBehaviour
 }
 ```
 
-#### 4. Additional methods
+<details>
+<summary><b>Additional methods and notes</b></summary>
+
+> **Recommendation.** Default to sync (`Instruction` / `InstructionData`); use the async variants when a step must wait.
+
+> **Cancellation.** When the binding is disposed or `lifetimeOwner` is destroyed, the running chain is cancelled; a repeat `Apply` cancels the previous run. In your async instructions, forward the token into every `await` (`Task.Delay(ms, cancellationToken)`, `UniTask.Delay(...)`, etc.) and call `cancellationToken.ThrowIfCancellationRequested()` in loops — otherwise the current step runs to completion before it stops.
 
 **`processor.ExecutionTask`** — the Task for the current run. Await it to observe when the entire chain finishes. Completes with `OperationCanceledException` on cancellation.
 
@@ -462,25 +585,15 @@ public class TutorialController : MonoBehaviour
 _instructionManager.ResolveInstructions(processor, lifetimeOwner: newOwner);
 ```
 
+</details>
+
 ---
 
 ### Conditions Module
 
-#### 1. What it solves
-
 Conditions are boolean predicates with change subscriptions. They handle reactive display and behaviour: show/hide UI, activate/deactivate objects, toggle mechanics — based on game state. Conditions can be composed with `All`, `Any`, `None`, `Not`.
 
-#### 2. How to use
-
-Two flavours: **inline** and **handler-based**.
-
-**Inline** — for simple conditions polled directly via `IsMet()`.
-
-**Handler-based** — required when you need **reactive change subscriptions**. The handler provides lifecycle hooks `OnFirstListenerAdded` / `OnLastListenerRemoved`: the first is called when the first subscriber appears, the second when the last subscriber leaves. Subscribe to your data source events inside these hooks and call `NotifyChanged()` when state flips. Without a handler, change notifications won't work — only direct polling.
-
-> **Recommendation.** If a condition must react to events (health change, state machine transition, timer) — always use a handler. Inline is only suitable for conditions polled manually.
-
-##### Inline
+The simplest form — an inline condition polled directly via `IsMet()`:
 
 ```csharp
 [Serializable]
@@ -491,7 +604,10 @@ public class IsNight : Condition
 }
 ```
 
-##### Handler-based
+<details>
+<summary><b>Handler-based — reactive change subscriptions</b></summary>
+
+**Handler-based** is required when you need **reactive change subscriptions**. The handler provides lifecycle hooks `OnFirstListenerAdded` / `OnLastListenerRemoved`: the first is called when the first subscriber appears, the second when the last subscriber leaves. Subscribe to your data source events inside these hooks and call `NotifyChanged()` when state flips. Without a handler, change notifications won't work — only direct polling.
 
 ```csharp
 // Data — lives in the config, serialized
@@ -526,9 +642,15 @@ public class HealthBelowHandler : ConditionHandler<HealthBelow>
 
 `NotifyChanged()` is a base class method. Call it whenever the condition state changes to notify all subscribers.
 
-#### 3. Usage example
+> **Recommendation.** If a condition must react to events (health change, state machine transition, timer) — always use a handler. Inline is only suitable for conditions polled manually.
 
-Resolve once, then subscribe — the callback fires immediately with the current state and again on every change:
+</details>
+
+**Running it** — resolve once, then subscribe; the callback fires immediately with the current state and again on every change:
+
+<p align="center">
+  <img src="Documentation~/conditions.gif" alt="Reactive UI toggling by a condition at runtime" width="720">
+</p>
 
 ```csharp
 public class UIHealthWarning : MonoBehaviour
@@ -546,9 +668,11 @@ public class UIHealthWarning : MonoBehaviour
         // Subscribe directly on the processor
         conditions.Subscribe(isMet => gameObject.SetActive(isMet));
     }
-
 }
 ```
+
+<details>
+<summary><b>Additional methods and composite conditions</b></summary>
 
 Direct poll without subscription:
 
@@ -558,8 +682,6 @@ if (_conditions.IsMet())
     // perform action
 }
 ```
-
-#### 4. Additional methods
 
 **`processor.Subscribe(Action<bool> onChanged)`** — registers a callback that fires immediately with the current `IsMet()` result, then again every time any condition changes. Multiple subscribers are supported.
 
@@ -587,30 +709,15 @@ All
 
 Added in the Inspector like regular conditions. Listeners fire once per inner change, regardless of how many external listeners are attached.
 
+</details>
+
 ---
 
 ### Extensions Module
 
-#### 1. What it solves
-
 Extensions are value carriers. They let you attach arbitrary values — cooldown, max count, radius, an icon, a prefab — to any config or component without modifying its class. Values can be authored directly in the Inspector, or produced at runtime by a handler (load a sprite from an asset manager by id, look up a value in a database, or simply fetch it at runtime from a manager).
 
-#### 2. How to use
-
-Pick along two axes: **inline vs handler-based** (do you need injected dependencies?) and **sync vs async** (is the value ready immediately, or loaded?). Read it by calling `GetValue()` (sync) or `await GetValueAsync(ct)` (async) on the extension you fetched.
-
-- **Inline** — the value lives on the data class. Sync base `Extension<T>` (`T GetValue()`), async base `AsyncExtension<T>` (`Task<T> GetValueAsync(ct)`).
-- **Handler-based** — data and behaviour split; the handler is created by the factory and pooled. Sync pair `ExtensionData` + `ExtensionHandler`, async pair `AsyncExtensionData` + `AsyncExtensionHandler`.
-
-Async extensions (inline or handler-based) must be resolved through `IExtensionManager` before their value is requested.
-
-> **Cancellation.** Disposing the binding or destroying the `lifetimeOwner` cancels an in-flight `GetValueAsync` — the `await` throws `OperationCanceledException`. Forward the token into every `await` inside your handler, otherwise the load runs to completion before it stops.
-
-> **Concurrency.** Each extension owns its own handler instance, so calling `GetValueAsync` on different extensions concurrently is safe. Calling it on the *same* extension runs one load per call — there's no dedup or caching — and is only safe when the handler keeps no per-call state in fields. Cache the `Task<TValue>` inside the handler if you want callers to share a single load. In Unity `await` usually resumes on the main thread, so this is cooperative interleaving rather than true parallelism.
-
-> **Note.** `TryGetExtension` returns the first match and logs a warning if there are several — use `GetExtensions<T>` to enumerate them all.
-
-##### Inline — sync
+The simplest form — an inline extension with a synchronous `GetValue`:
 
 ```csharp
 [Serializable]
@@ -622,6 +729,22 @@ public class MaxCount : Extension<int>
     public override int GetValue() => value;
 }
 ```
+
+Read directly (implicit conversion to `T` is supported):
+
+```csharp
+int max = item.Extensions.TryGetExtension(out MaxCount ext) ? ext : int.MaxValue;
+```
+
+<details>
+<summary><b>All variants: inline / handler-based × sync / async</b></summary>
+
+Pick along two axes: **inline vs handler-based** (do you need injected dependencies?) and **sync vs async** (is the value ready immediately, or loaded?). Read it by calling `GetValue()` (sync) or `await GetValueAsync(ct)` (async) on the extension you fetched.
+
+- **Inline** — the value lives on the data class. Sync base `Extension<T>` (`T GetValue()`), async base `AsyncExtension<T>` (`Task<T> GetValueAsync(ct)`).
+- **Handler-based** — data and behaviour split; the handler is created by the factory and pooled. Sync pair `ExtensionData` + `ExtensionHandler`, async pair `AsyncExtensionData` + `AsyncExtensionHandler`.
+
+Async extensions (inline or handler-based) must be resolved through `IExtensionManager` before their value is requested.
 
 ##### Inline — async
 
@@ -676,16 +799,9 @@ public class SpriteByIdHandler : AsyncExtensionHandler<SpriteById, Sprite>
 }
 ```
 
-#### 3. Usage example
+</details>
 
-Inline — read directly:
-
-```csharp
-// Implicit conversion to T is supported
-int max = item.Extensions.TryGetExtension(out MaxCount ext) ? ext : int.MaxValue;
-```
-
-Handler-based — resolve once, then await the value on demand. Your own token is linked with the resolve-scoped one:
+**Running it with a handler** — resolve once, then await the value on demand. Your own token is linked with the resolve-scoped one:
 
 ```csharp
 _extensionManager.ResolveExtensions(extensions, lifetimeOwner: this);
@@ -694,7 +810,12 @@ if (extensions.TryGetExtension(out SpriteById icon))
     image.sprite = await icon.GetValueAsync(cancellationToken);
 ```
 
-#### 4. Additional methods
+<details>
+<summary><b>Additional methods and notes</b></summary>
+
+> **Cancellation.** Disposing the binding or destroying the `lifetimeOwner` cancels an in-flight `GetValueAsync` — the `await` throws `OperationCanceledException`. Forward the token into every `await` inside your handler, otherwise the load runs to completion before it stops.
+
+> **Concurrency.** Each extension owns its own handler instance, so calling `GetValueAsync` on different extensions concurrently is safe. Calling it on the *same* extension runs one load per call — there's no dedup or caching — and is only safe when the handler keeps no per-call state in fields. Cache the `Task<TValue>` inside the handler if you want callers to share a single load. In Unity `await` usually resumes on the main thread, so this is cooperative interleaving rather than true parallelism.
 
 **`GetValueAsync(ct)`** — exposed by async extensions (`AsyncExtension<T>` and `AsyncExtensionData`). For handler-based ones it requires a prior `ResolveExtensions`; called before binding it logs an error and returns `default`. Disposing the binding cancels an in-flight request (the token is honoured only if the handler forwards it into its own `await`s). Sync extensions read synchronously via `GetValue()` instead.
 
@@ -704,6 +825,10 @@ if (extensions.TryGetExtension(out SpriteById icon))
 foreach (var tag in config.Extensions.GetExtensions<Tag>())
     Debug.Log(tag.GetValue());
 ```
+
+> **Note.** `TryGetExtension` returns the first match and logs a warning if there are several — use `GetExtensions<T>` to enumerate them all.
+
+</details>
 
 ---
 
@@ -719,26 +844,15 @@ To group your types under a submenu in that dropdown, decorate the class with `[
 public class MaxCount : Extension<int> { ... }
 ```
 
-<p align="center">
-  <img src="Documentation~/inspector.gif" alt="Adding an Extension via the typed dropdown" width="580">
-</p>
-
 If you need a polymorphic list outside the built-in processors, use `StableRefList<T>` directly — that's the same type the processors use internally.
 
 ---
 
-## Lifetime Contract
+## Lifetime
 
-### How bindings work
+Each `Resolve*` call internally **resolves handlers** (takes from pool or creates via factory, binds to data objects) and **returns an `IDisposable`** — a binding that, when disposed, returns handlers to the pool and cleans up everything.
 
-`ResolveModifications`, `ResolveInstructions`, `ResolveConditions`, `ResolveExtensions` — each of these methods internally:
-
-1. **Resolves handlers** — takes from pool or creates via factory, binds to data objects.
-2. **Returns `IDisposable`** — a binding that, when disposed, returns handlers to the pool and cleans up everything.
-
-### lifetimeOwner
-
-The parameter is required — pass an owner object and the manager disposes the binding automatically when it is destroyed. If you don't need auto-dispose and control the lifetime yourself — pass `null` explicitly:
+The `lifetimeOwner` parameter is required. Pass an owner object and the manager disposes the binding automatically when it is destroyed. If you control the lifetime yourself — pass `null` explicitly:
 
 ```csharp
 // Auto-dispose when this is destroyed — no need to store IDisposable
@@ -753,133 +867,18 @@ _binding = _manager.ResolveInstructions(processor, lifetimeOwner: this);
 _binding.Dispose(); // safe to call early; no-op if already disposed by lifetimeOwner
 ```
 
-### Rules
+Rules:
 
 - Calling any `Resolve*` again on the same processor **automatically disposes the previous binding** — no manual cleanup needed.
 - `Dispose()` is **idempotent** — safe to call multiple times or in any order. Exceptions during cleanup are logged, not thrown.
 - Calling `Apply()`, `IsMet()`, or listener methods on a `*Data` object **outside an active binding** (before resolve or after dispose) is a no-op — methods return `false` or do nothing.
 
-### Binding lifecycle hooks
-
-Any configurator — an entry in a processor's list, whether a modification, instruction, condition, or extension — can take control of its own binding lifetime by implementing `IBindingLifecycle`. When it does, the manager calls `OnResolve()` as the binding is resolved and `OnRelease()` when that binding is disposed (on a repeat resolve of the same processor, or when the `lifetimeOwner` is destroyed). It's fully opt-in: configurators that don't implement the interface take part in no lifecycle callbacks.
-
-Use it for resolve-scoped state that must be set up and torn down together with the binding — most commonly event subscriptions:
-
-```csharp
-[Serializable]
-public class PlaySound : Instruction, IBindingLifecycle
-{
-    [Inject] private IAudioBus _audioBus;
-
-    void IBindingLifecycle.OnResolve() => _audioBus.MuteChanged += OnMuteChanged;
-    void IBindingLifecycle.OnRelease() => _audioBus.MuteChanged -= OnMuteChanged;
-
-    public override void Apply() { /* play the sound */ }
-
-    private void OnMuteChanged(bool muted) { /* react */ }
-}
-```
-
-Guarantees:
-
-- **Paired 1:1** — every `OnResolve()` is followed by exactly one `OnRelease()`. A repeat resolve disposes the old binding (`OnRelease`) before building the new one (`OnResolve`).
-- **Ordering** — `OnResolve()` runs *after* any pooled handler has been bound, so a handler-based configurator can rely on its handler already being attached.
-- **Composites** — conditions nested inside `All`/`Any`/`None`/`Not` receive the hooks too; each unique configurator is called once, even when shared or referenced through composites.
-- **Keep subscription state on the configurator, not on a pooled handler** — handlers are shared and reused across resolves, so a subscription stored there would leak.
-
-`OnResolve()` is your code and may throw; the exception propagates out of the `Resolve*` call, just like a handler binding failure (it is not swallowed). Because `OnRelease` is registered only after `OnResolve` returns, a throwing `OnResolve` never leaves a dangling `OnRelease`.
-
 ---
 
-## Under the Hood
+## Learn More
 
-This section describes exactly what happens inside a manager on each call. Knowing this helps predict edge cases and use the API with confidence.
-
-### Handler Pool
-
-Each manager owns a `MultiPool<Type, IXxxHandler>` — a pool keyed by handler type. On the first request for a type, the factory's `Create(type)` is called once and a factory delegate is registered; all subsequent requests return a pooled instance. On dispose, handlers are unbound from data and returned to the pool. Handlers are **not** reset on return — if your handler accumulates state, reset it in `SetData` or `Apply`.
-
-### Active Bindings Registry
-
-Every manager holds a `Dictionary<object, IDisposable> ActiveBindings` mapping each processor to its current binding. When any `Resolve*` is called again on the same processor, the dictionary finds the previous binding and silently disposes it before creating a new one.
-
-### ProcessorDisposable — LIFO Cleanup
-
-The `IDisposable` returned from `Resolve*` is a `ProcessorDisposable` — an ordered list of cleanup actions. On `Dispose()` it executes them **in reverse (LIFO)** order. Each action is wrapped in a try/catch so one failure doesn't block the rest.
-
-For `ResolveInstructions` the registration order is:
-
-1. `cancellationTokenSource.Dispose()`
-2. `binding.Dispose()` — unbinds handlers, removes from ActiveBindings
-3. `cancellationTokenSource.Cancel()`
-
-Reversed on dispose → **Cancel → Unbind handlers → Dispose CTS**. Cancellation must propagate into the running task before handlers are released.
-
-`ProcessorDisposable` is idempotent: the first `Dispose()` sets a flag; subsequent calls are no-ops. If `Register()` is called on an already-disposed instance (e.g. race with `lifetimeOwner` destruction), the action fires immediately so nothing leaks.
-
-### ProcessorReleaser — Lifetime Binding
-
-`ProcessorReleaser` is an internal `MonoBehaviour` added to `lifetimeOwner.gameObject` on first use (`TryGetComponent`, otherwise `AddComponent`). It holds a list of `IDisposable` bindings and calls `Dispose()` on each one — in reverse order — inside `OnDestroy`. The `[DisallowMultipleComponent]` attribute ensures only one releaser exists per GameObject; multiple managers on the same owner share the same component.
-
-If the GameObject is already destroyed when `Add()` is called (race condition), the releaser disposes the incoming binding immediately rather than silently dropping it.
-
-### Full Lifecycle of ResolveInstructions
-
-```
-ResolveInstructions(processor, lifetimeOwner)   // binds handlers; does NOT run them
-│
-├─ 1. processor == null? → log error, return null
-│
-├─ 2. Previous binding for this processor? → Dispose() (Cancel + Unbind + Dispose CTS)
-│
-├─ 3. new ProcessorDisposable; ActiveBindings[processor] = disposable
-│
-├─ 4. new CancellationTokenSource cts; processor.SetResolveCancellation(cts.Token)
-│
-├─ 5. foreach instruction in processor.Instructions
-│       instruction is IHandlerBinder?
-│         pool.HasFactory(type)? no → RegisterFactory(() => factory.Create(type))
-│         pool.Get(type) → pooled instance or freshly created
-│         binder.BindHandler(handler) → data stores handler reference
-│
-├─ 6. Register cleanup (runs LIFO): cts.Dispose → Unregister(processor) → cts.Cancel
-│
-└─ 7. BindLifetime(disposable, lifetimeOwner)
-        TryGetComponent<ProcessorReleaser>, otherwise AddComponent
-        releaser.Add(disposable)
-
-// Separate, user-invoked step — NOT part of resolve:
-processor.Apply(cancellationToken)
-│
-├─ cancel/dispose its own previous run, then link the caller token with the resolve token
-├─ ExecutionTask = RunAsync(linkedToken)
-└─ RunAsync: foreach instruction
-       cancellationToken.ThrowIfCancellationRequested()
-       instruction is IAsyncInstruction ? await Apply(token) : Apply()
-       OperationCanceledException → re-throw (stops the chain)
-       other exception            → Debug.LogException (continues)
-```
-
-### Dispose Chain
-
-```
-combined.Dispose()
-  — triggered by: user code, lifetimeOwner.OnDestroy, or repeat ResolveInstructions
-│
-├─ 1. cancellationTokenSource.Cancel()
-│       token becomes cancelled
-│       running instruction's Apply() throws OperationCanceledException
-│       RunAsync re-throws → ExecutionTask faults with OperationCanceledException
-│
-├─ 2. binding.Dispose() → Unregister(processor)
-│       ActiveBindings.Remove(processor)
-│       foreach instruction is IHandlerBinder
-│           binder.UnbindHandler() → data nulls its handler reference
-│           pool.Release(type, handler) → handler returned to pool
-│
-└─ 3. cancellationTokenSource.Dispose()
-        releases the OS wait handle associated with the token
-```
+- **[Binding lifecycle hooks](Documentation~/ADVANCED.md#binding-lifecycle-hooks)** — `IBindingLifecycle`: resolve-scoped subscriptions and state, pairing guarantees.
+- **[Under the Hood](Documentation~/ADVANCED.md#under-the-hood)** — handler pool, active bindings registry, LIFO cleanup, `ProcessorReleaser`, full lifecycle and dispose chain.
 
 ---
 

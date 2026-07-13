@@ -1,0 +1,17 @@
+{
+    "name": "Configurators.Samples.ExtensionsForConfig",
+    "rootNamespace": "SST.Configurators.Samples.ExtensionsForConfig",
+    "references": [
+        "Configurators",
+        "StableRef"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
