@@ -32,6 +32,7 @@
   - [Instructions](#модуль-instructions)
   - [Conditions](#модуль-conditions)
   - [Extensions](#модуль-extensions)
+- [Жизненный цикл использования](#жизненный-цикл-использования)
 - [Инспектор](#инспектор)
 - [Лайфтайм](#лайфтайм)
 - [Подробнее](#подробнее)
@@ -133,7 +134,7 @@ public class SetMaxHealth : Modification<Unit>
 **3. Зарезолви один раз и применяй к контексту:**
 
 ```csharp
-public class UnitSpawner : MonoBehaviour
+public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private ModificationProcessor<Unit> modifications;
 
@@ -147,7 +148,7 @@ public class UnitSpawner : MonoBehaviour
 }
 ```
 
-Новые баффы добавляются в инспекторе, порядок — перетаскиванием; класс `UnitSpawner` при этом не меняется. `lifetimeOwner: this` привязывает очистку к объекту — при его уничтожении всё освобождается автоматически.
+Новые баффы добавляются в инспекторе, порядок — перетаскиванием; класс `EnemySpawner` при этом не меняется. `lifetimeOwner: this` привязывает очистку к объекту — при его уничтожении всё освобождается автоматически.
 
 ---
 
@@ -157,12 +158,12 @@ public class UnitSpawner : MonoBehaviour
 
 | Сэмпл | Модуль | Что показывает |
 |---|---|---|
-| [Instructions for Button](Samples~/Instructions for Button/README.ru.md) | Instructions | Кнопка с цепочкой инструкций на каждое событие указателя — последовательные и async-шаги, отмена. Идёт со сценой. |
-| [Modifications for Object](Samples~/Modifications for Object/README.ru.md) | Modifications | Каждую секунду спавнит картинку и настраивает каждую одним списком модификаций (как контекст) — меняешь список в инспекторе, код спавнера не трогаешь. |
-| [Conditions for Visibility](Samples~/Conditions for Visibility/README.ru.md) | Conditions | UI-флажки через контроллер управляют двухсостояночной панелью — комбинация условий выбирает состояние, а его инструкции меняют вид (Conditions + Instructions вместе). |
-| [Extensions for Config](Samples~/Extensions for Config/README.ru.md) | Extensions | Конфиг несёт опциональные экстеншены; вьюшка рисует только присутствующие. |
+| [Instructions for Button](Samples~/Instructions%20for%20Button/README.ru.md) | Instructions | Кнопка с цепочкой инструкций на каждое событие указателя — последовательные и async-шаги, отмена. Идёт со сценой. |
+| [Modifications for Object](Samples~/Modifications%20for%20Object/README.ru.md) | Modifications | Каждую секунду спавнит картинку и настраивает каждую одним списком модификаций (как контекст) — меняешь список в инспекторе, код спавнера не трогаешь. |
+| [Conditions for Visibility](Samples~/Conditions%20for%20Visibility/README.ru.md) | Conditions | UI-флажки через контроллер управляют двухсостояночной панелью — комбинация условий выбирает состояние, а его инструкции меняют вид (Conditions + Instructions вместе). |
+| [Extensions for Config](Samples~/Extensions%20for%20Config/README.ru.md) | Extensions | Конфиг несёт опциональные экстеншены; вьюшка рисует только присутствующие. |
 
-Плюс [Zenject For Configurators](Samples~/Zenject For Configurators) — готовая `IHandlerFactory` и инсталлер.
+Плюс [Zenject For Configurators](Samples~/Zenject%20For%20Configurators) — готовая `IHandlerFactory` и инсталлер.
 
 ---
 
@@ -203,7 +204,7 @@ IExtensionManager extensionManager = new ExtensionManager();
 
 Менеджеры делегируют создание хендлеров в `IHandlerFactory`. **По умолчанию — `ActivatorHandlerFactory`** — создаёт их через `Activator.CreateInstance`. Работает, когда у хендлеров нет зависимостей (или они берут их вручную через сервис-локатор). Для старта этого достаточно.
 
-Если хендлерам нужен DI — подключи свою фабрику, чтобы созданием занимался контейнер. Готовая интеграция с Zenject (фабрика + инсталлер с биндингами) лежит в сэмпле [Zenject For Configurators](Samples~/Zenject For Configurators).
+Если хендлерам нужен DI — подключи свою фабрику, чтобы созданием занимался контейнер. Готовая интеграция с Zenject (фабрика + инсталлер с биндингами) лежит в сэмпле [Zenject For Configurators](Samples~/Zenject%20For%20Configurators).
 
 <details>
 <summary><b>Своя фабрика под DI</b></summary>
@@ -228,7 +229,7 @@ public class ZenjectHandlerFactory : IHandlerFactory
 }
 ```
 
-После этого любой хендлер может объявить собственные поля с `[Inject]` и получать зависимости как любой другой класс — фабрика возьмёт это на себя. Как забиндить фабрику и менеджеры — смотри инсталлер в сэмпле [Zenject For Configurators](Samples~/Zenject For Configurators).
+После этого любой хендлер может объявить собственные поля с `[Inject]` и получать зависимости как любой другой класс — фабрика возьмёт это на себя. Как забиндить фабрику и менеджеры — смотри инсталлер в сэмпле [Zenject For Configurators](Samples~/Zenject%20For%20Configurators).
 
 </details>
 
@@ -251,7 +252,7 @@ manager.ResolveModifications(processor, lifetimeOwner: this);
 await processor.Apply(context);
 ```
 
-> **О примерах.** Примеры кода ниже не используют DI-контейнер. `ServiceLocator.Get<T>()` — условное обозначение: как именно ты получаешь менеджеры (ручное создание, Zenject, VContainer или любой другой подход) — полностью на твоё усмотрение. `ActorUnit`, `PlayerHealth`, `IGameFactory`, `ISkinService` и аналогичные типы — проектные плейсхолдеры; подставь свои.
+> **О примерах.** Примеры кода ниже не используют DI-контейнер. `ServiceLocator.Get<T>()` — условное обозначение: как именно ты получаешь менеджеры (ручное создание, Zenject, VContainer или любой другой подход) — полностью на твоё усмотрение. `Unit`, `PlayerHealth`, `IGameFactory`, `ISkinService` и аналогичные типы — проектные плейсхолдеры; подставь свои.
 
 ### Модуль Modifications
 
@@ -264,11 +265,11 @@ await processor.Apply(context);
 ```csharp
 [Serializable]
 [StableRefCategory("Stats")]
-public class SetMaxHealth : Modification<ActorUnit>
+public class SetMaxHealth : Modification<Unit>
 {
     public int Value;
 
-    public override void Apply(ActorUnit context) => context.GetAbility<HealthAbility>().SetMax(Value);
+    public override void Apply(Unit context) => context.Health.SetMax(Value);
 }
 ```
 
@@ -287,11 +288,11 @@ public class SetMaxHealth : Modification<ActorUnit>
 ```csharp
 [Serializable]
 [StableRefCategory("Time")]
-public class RevealAfterDelay : AsyncModification<ActorUnit>
+public class RevealAfterDelay : AsyncModification<Unit>
 {
     public float Seconds;
 
-    public override async Task Apply(ActorUnit context, CancellationToken cancellationToken = default)
+    public override async Task Apply(Unit context, CancellationToken cancellationToken = default)
     {
         await Task.Delay(TimeSpan.FromSeconds(Seconds), cancellationToken);
         context.SetVisible(true);
@@ -304,17 +305,17 @@ public class RevealAfterDelay : AsyncModification<ActorUnit>
 ```csharp
 [Serializable]
 [StableRefCategory("Spawn")]
-public class SpawnChild : ModificationData<ActorUnit, SpawnChildHandler>
+public class SpawnChild : ModificationData<Unit, SpawnChildHandler>
 {
-    public ActorUnit Prefab;
+    public Unit Prefab;
 }
 
-public class SpawnChildHandler : ModificationHandler<SpawnChild, ActorUnit>
+public class SpawnChildHandler : ModificationHandler<SpawnChild, Unit>
 {
     private readonly IGameFactory _factory = ServiceLocator.Get<IGameFactory>();
     // С Zenject: [Inject] private readonly IGameFactory _factory;
 
-    public override void Apply(ActorUnit context) => _factory.Spawn(Data.Prefab, context.transform.position);
+    public override void Apply(Unit context) => _factory.Spawn(Data.Prefab, context.transform.position);
 }
 ```
 
@@ -323,17 +324,17 @@ public class SpawnChildHandler : ModificationHandler<SpawnChild, ActorUnit>
 ```csharp
 [Serializable]
 [StableRefCategory("Appearance")]
-public class ApplySkin : AsyncModificationData<ActorUnit, ApplySkinHandler>
+public class ApplySkin : AsyncModificationData<Unit, ApplySkinHandler>
 {
     public string SkinId;
 }
 
-public class ApplySkinHandler : AsyncModificationHandler<ApplySkin, ActorUnit>
+public class ApplySkinHandler : AsyncModificationHandler<ApplySkin, Unit>
 {
     private readonly ISkinService _skins = ServiceLocator.Get<ISkinService>();
     // С Zenject: [Inject] private readonly ISkinService _skins;
 
-    public override async Task Apply(ActorUnit context, CancellationToken cancellationToken = default)
+    public override async Task Apply(Unit context, CancellationToken cancellationToken = default)
     {
         var skin = await _skins.LoadAsync(Data.SkinId, cancellationToken);
         context.SetSkin(skin);
@@ -346,9 +347,9 @@ public class ApplySkinHandler : AsyncModificationHandler<ApplySkin, ActorUnit>
 **Запуск:**
 
 ```csharp
-public class ActorSpawner : MonoBehaviour
+public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private ModificationProcessor<ActorUnit> modifications;
+    [SerializeField] private ModificationProcessor<Unit> modifications;
 
     private readonly IModificationManager _modificationManager = ServiceLocator.Get<IModificationManager>();
     // С Zenject: [Inject] private readonly IModificationManager _modificationManager;
@@ -359,11 +360,11 @@ public class ActorSpawner : MonoBehaviour
         _modificationManager.ResolveModifications(modifications, lifetimeOwner: this);
     }
 
-    // Сконфигурировать только что заспавненного актёра — ждём каждую модификацию по порядку
-    public async Task Configure(ActorUnit actor)
+    // Сконфигурировать только что заспавненного юнита — ждём каждую модификацию по порядку
+    public async Task Configure(Unit unit)
     {
-        try { await modifications.Apply(actor); }
-        catch (OperationCanceledException) { /* актёр или спавнер уничтожен во время конфигурации */ }
+        try { await modifications.Apply(unit); }
+        catch (OperationCanceledException) { /* юнит или спавнер уничтожен во время конфигурации */ }
     }
 }
 ```
@@ -401,7 +402,7 @@ _modificationManager.ResolveModifications(processor, lifetimeOwner: newOwner);
 
 </details>
 
-**Рабочий пример:** [Modifications for Object](Samples~/Modifications for Object/README.ru.md)
+**Рабочий пример:** [Modifications for Object](Samples~/Modifications%20for%20Object/README.ru.md)
 
 ---
 
@@ -577,7 +578,7 @@ _instructionManager.ResolveInstructions(processor, lifetimeOwner: newOwner);
 
 </details>
 
-**Рабочий пример:** [Instructions for Button](Samples~/Instructions for Button/README.ru.md)
+**Рабочий пример:** [Instructions for Button](Samples~/Instructions%20for%20Button/README.ru.md)
 
 ---
 
@@ -701,7 +702,7 @@ All
 
 </details>
 
-**Рабочий пример:** [Conditions for Visibility](Samples~/Conditions for Visibility/README.ru.md)
+**Рабочий пример:** [Conditions for Visibility](Samples~/Conditions%20for%20Visibility/README.ru.md)
 
 ---
 
@@ -824,7 +825,17 @@ foreach (var tag in config.Extensions.GetExtensions<Tag>())
 
 </details>
 
-**Рабочий пример:** [Extensions for Config](Samples~/Extensions for Config/README.ru.md)
+**Рабочий пример:** [Extensions for Config](Samples~/Extensions%20for%20Config/README.ru.md)
+
+---
+
+## Жизненный цикл использования
+
+Как конфигуратор проходит путь от выбора модуля до автоочистки. Сначала по задаче выбираешь модуль, дальше шаги одинаковы для всех четырёх: описал поведение классом → положил процессор → собрал список в инспекторе → зарезолвил через менеджер → используешь → всё само освобождается при уничтожении владельца.
+
+<p align="center">
+  <img src="Documentation~/lifecycle.ru.svg" width="720" alt="Жизненный цикл использования конфигураторов">
+</p>
 
 ---
 

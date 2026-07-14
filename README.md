@@ -32,6 +32,7 @@ In the Inspector you only assemble ready-made components and configure them. Con
   - [Instructions](#instructions-module)
   - [Conditions](#conditions-module)
   - [Extensions](#extensions-module)
+- [Usage Lifecycle](#usage-lifecycle)
 - [Inspector](#inspector)
 - [Lifetime](#lifetime)
 - [Learn More](#learn-more)
@@ -133,7 +134,7 @@ public class SetMaxHealth : Modification<Unit>
 **3. Resolve once and apply to a context:**
 
 ```csharp
-public class UnitSpawner : MonoBehaviour
+public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private ModificationProcessor<Unit> modifications;
 
@@ -147,7 +148,7 @@ public class UnitSpawner : MonoBehaviour
 }
 ```
 
-New buffs are added in the Inspector, order is drag-and-drop; `UnitSpawner` never changes. `lifetimeOwner: this` ties cleanup to the object — everything is released automatically when it's destroyed.
+New buffs are added in the Inspector, order is drag-and-drop; `EnemySpawner` never changes. `lifetimeOwner: this` ties cleanup to the object — everything is released automatically when it's destroyed.
 
 ---
 
@@ -157,12 +158,12 @@ Runnable examples, one per module — import via `Window → Package Manager →
 
 | Sample | Module | What it shows |
 |---|---|---|
-| [Instructions for Button](Samples~/Instructions for Button/README.md) | Instructions | A UI button running an authored chain per pointer event — sequential and async steps, cancellation. Ships with a scene. |
-| [Modifications for Object](Samples~/Modifications for Object/README.md) | Modifications | Spawns an image every second and configures each one via the same modification list applied as context — retune the look in the Inspector, spawner code unchanged. |
-| [Conditions for Visibility](Samples~/Conditions for Visibility/README.md) | Conditions | UI toggles drive a two-state panel through a controller — condition combinations pick the state, its instructions restyle it (Conditions + Instructions combined). |
-| [Extensions for Config](Samples~/Extensions for Config/README.md) | Extensions | A config carries optional extensions; the view renders only those present. |
+| [Instructions for Button](Samples~/Instructions%20for%20Button/README.md) | Instructions | A UI button running an authored chain per pointer event — sequential and async steps, cancellation. Ships with a scene. |
+| [Modifications for Object](Samples~/Modifications%20for%20Object/README.md) | Modifications | Spawns an image every second and configures each one via the same modification list applied as context — retune the look in the Inspector, spawner code unchanged. |
+| [Conditions for Visibility](Samples~/Conditions%20for%20Visibility/README.md) | Conditions | UI toggles drive a two-state panel through a controller — condition combinations pick the state, its instructions restyle it (Conditions + Instructions combined). |
+| [Extensions for Config](Samples~/Extensions%20for%20Config/README.md) | Extensions | A config carries optional extensions; the view renders only those present. |
 
-Plus [Zenject For Configurators](Samples~/Zenject For Configurators) — a ready `IHandlerFactory` and installer.
+Plus [Zenject For Configurators](Samples~/Zenject%20For%20Configurators) — a ready `IHandlerFactory` and installer.
 
 ---
 
@@ -203,7 +204,7 @@ Handlers are pooled runtime objects — they're created once, reused, and return
 
 Managers delegate handler instantiation to `IHandlerFactory`. **By default — `ActivatorHandlerFactory`** — creates them via `Activator.CreateInstance`. Works when handlers have no dependencies (or resolve them manually via a service locator). That's enough to get started.
 
-If your handlers need DI, plug in your own factory so the container does the construction. A ready-made Zenject integration (factory + installer with bindings) ships in the [Zenject For Configurators](Samples~/Zenject For Configurators) sample.
+If your handlers need DI, plug in your own factory so the container does the construction. A ready-made Zenject integration (factory + installer with bindings) ships in the [Zenject For Configurators](Samples~/Zenject%20For%20Configurators) sample.
 
 <details>
 <summary><b>Your own factory for DI</b></summary>
@@ -228,7 +229,7 @@ public class ZenjectHandlerFactory : IHandlerFactory
 }
 ```
 
-With this in place, any handler can declare its own `[Inject]` fields and receive dependencies like any other class — the factory takes care of the rest. For how to bind the factory and managers, see the installer in the [Zenject For Configurators](Samples~/Zenject For Configurators) sample.
+With this in place, any handler can declare its own `[Inject]` fields and receive dependencies like any other class — the factory takes care of the rest. For how to bind the factory and managers, see the installer in the [Zenject For Configurators](Samples~/Zenject%20For%20Configurators) sample.
 
 </details>
 
@@ -251,7 +252,7 @@ manager.ResolveModifications(processor, lifetimeOwner: this);
 await processor.Apply(context);
 ```
 
-> **About the examples.** Code samples below don't use any DI container. `ServiceLocator.Get<T>()` is a stand-in — how you actually obtain your managers (manual instantiation, Zenject, VContainer, or any other approach) is entirely up to you. `ActorUnit`, `PlayerHealth`, `IGameFactory`, `ISkinService` and similar types are project-specific placeholders; substitute them with your own.
+> **About the examples.** Code samples below don't use any DI container. `ServiceLocator.Get<T>()` is a stand-in — how you actually obtain your managers (manual instantiation, Zenject, VContainer, or any other approach) is entirely up to you. `Unit`, `PlayerHealth`, `IGameFactory`, `ISkinService` and similar types are project-specific placeholders; substitute them with your own.
 
 ### Modifications Module
 
@@ -264,11 +265,11 @@ The simplest form — an inline modification with a synchronous `Apply`:
 ```csharp
 [Serializable]
 [StableRefCategory("Stats")]
-public class SetMaxHealth : Modification<ActorUnit>
+public class SetMaxHealth : Modification<Unit>
 {
     public int Value;
 
-    public override void Apply(ActorUnit context) => context.GetAbility<HealthAbility>().SetMax(Value);
+    public override void Apply(Unit context) => context.Health.SetMax(Value);
 }
 ```
 
@@ -287,11 +288,11 @@ The processor runs the list in order — sync entries inline, async entries awai
 ```csharp
 [Serializable]
 [StableRefCategory("Time")]
-public class RevealAfterDelay : AsyncModification<ActorUnit>
+public class RevealAfterDelay : AsyncModification<Unit>
 {
     public float Seconds;
 
-    public override async Task Apply(ActorUnit context, CancellationToken cancellationToken = default)
+    public override async Task Apply(Unit context, CancellationToken cancellationToken = default)
     {
         await Task.Delay(TimeSpan.FromSeconds(Seconds), cancellationToken);
         context.SetVisible(true);
@@ -304,17 +305,17 @@ public class RevealAfterDelay : AsyncModification<ActorUnit>
 ```csharp
 [Serializable]
 [StableRefCategory("Spawn")]
-public class SpawnChild : ModificationData<ActorUnit, SpawnChildHandler>
+public class SpawnChild : ModificationData<Unit, SpawnChildHandler>
 {
-    public ActorUnit Prefab;
+    public Unit Prefab;
 }
 
-public class SpawnChildHandler : ModificationHandler<SpawnChild, ActorUnit>
+public class SpawnChildHandler : ModificationHandler<SpawnChild, Unit>
 {
     private readonly IGameFactory _factory = ServiceLocator.Get<IGameFactory>();
     // With Zenject: [Inject] private readonly IGameFactory _factory;
 
-    public override void Apply(ActorUnit context) => _factory.Spawn(Data.Prefab, context.transform.position);
+    public override void Apply(Unit context) => _factory.Spawn(Data.Prefab, context.transform.position);
 }
 ```
 
@@ -323,17 +324,17 @@ public class SpawnChildHandler : ModificationHandler<SpawnChild, ActorUnit>
 ```csharp
 [Serializable]
 [StableRefCategory("Appearance")]
-public class ApplySkin : AsyncModificationData<ActorUnit, ApplySkinHandler>
+public class ApplySkin : AsyncModificationData<Unit, ApplySkinHandler>
 {
     public string SkinId;
 }
 
-public class ApplySkinHandler : AsyncModificationHandler<ApplySkin, ActorUnit>
+public class ApplySkinHandler : AsyncModificationHandler<ApplySkin, Unit>
 {
     private readonly ISkinService _skins = ServiceLocator.Get<ISkinService>();
     // With Zenject: [Inject] private readonly ISkinService _skins;
 
-    public override async Task Apply(ActorUnit context, CancellationToken cancellationToken = default)
+    public override async Task Apply(Unit context, CancellationToken cancellationToken = default)
     {
         var skin = await _skins.LoadAsync(Data.SkinId, cancellationToken);
         context.SetSkin(skin);
@@ -346,9 +347,9 @@ public class ApplySkinHandler : AsyncModificationHandler<ApplySkin, ActorUnit>
 **Running it:**
 
 ```csharp
-public class ActorSpawner : MonoBehaviour
+public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private ModificationProcessor<ActorUnit> modifications;
+    [SerializeField] private ModificationProcessor<Unit> modifications;
 
     private readonly IModificationManager _modificationManager = ServiceLocator.Get<IModificationManager>();
     // With Zenject: [Inject] private readonly IModificationManager _modificationManager;
@@ -359,11 +360,11 @@ public class ActorSpawner : MonoBehaviour
         _modificationManager.ResolveModifications(modifications, lifetimeOwner: this);
     }
 
-    // Configure a freshly spawned actor — awaits every modification in order
-    public async Task Configure(ActorUnit actor)
+    // Configure a freshly spawned unit — awaits every modification in order
+    public async Task Configure(Unit unit)
     {
-        try { await modifications.Apply(actor); }
-        catch (OperationCanceledException) { /* actor or spawner destroyed mid-configure */ }
+        try { await modifications.Apply(unit); }
+        catch (OperationCanceledException) { /* unit or spawner destroyed mid-configure */ }
     }
 }
 ```
@@ -401,7 +402,7 @@ _modificationManager.ResolveModifications(processor, lifetimeOwner: newOwner);
 
 </details>
 
-**Working example:** [Modifications for Object](Samples~/Modifications for Object/README.md)
+**Working example:** [Modifications for Object](Samples~/Modifications%20for%20Object/README.md)
 
 ---
 
@@ -577,7 +578,7 @@ _instructionManager.ResolveInstructions(processor, lifetimeOwner: newOwner);
 
 </details>
 
-**Working example:** [Instructions for Button](Samples~/Instructions for Button/README.md)
+**Working example:** [Instructions for Button](Samples~/Instructions%20for%20Button/README.md)
 
 ---
 
@@ -701,7 +702,7 @@ Added in the Inspector like regular conditions. Listeners fire once per inner ch
 
 </details>
 
-**Working example:** [Conditions for Visibility](Samples~/Conditions for Visibility/README.md)
+**Working example:** [Conditions for Visibility](Samples~/Conditions%20for%20Visibility/README.md)
 
 ---
 
@@ -824,7 +825,17 @@ foreach (var tag in config.Extensions.GetExtensions<Tag>())
 
 </details>
 
-**Working example:** [Extensions for Config](Samples~/Extensions for Config/README.md)
+**Working example:** [Extensions for Config](Samples~/Extensions%20for%20Config/README.md)
+
+---
+
+## Usage Lifecycle
+
+How a configurator travels from picking a module to automatic cleanup. First you pick a module by task; from there the steps are identical for all four: describe the behaviour as a class → drop in a processor → assemble the list in the Inspector → resolve via the manager → use it → everything is released when the owner is destroyed.
+
+<p align="center">
+  <img src="Documentation~/lifecycle.svg" width="720" alt="Configurators usage lifecycle">
+</p>
 
 ---
 
