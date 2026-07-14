@@ -9,11 +9,9 @@
 
 ---
 
-**Gameplay rules as data.** Describe a behaviour once as a small serializable class, then assemble, reorder, and combine those behaviours as a list right in the Inspector — the code that runs them never changes. Everything is serializable, handlers are pooled, and it works with any DI container.
+**Gameplay rules as data.** Describe a behaviour once as a small serializable class — then assemble, reorder, and combine those behaviours as a list right in the Inspector, with no code changes.
 
-<p align="center">
-  <img src="Documentation~/hero.gif" alt="Assembling rules in the Inspector and running them" width="960">
-</p>
+In the Inspector you only assemble ready-made components and configure them. Configurators is the implementation of those components for the Inspector: they stack into a typed list, and beneath it they get a runtime — a pooled, allocation-free handler per step, dependencies through any DI container, async steps cancelled by the object's lifetime, reactive conditions.
 
 ## Table Of Contents
 
@@ -45,7 +43,7 @@
 
 ## Why
 
-Games constantly grow small behaviours: an effect applied to a unit on spawn, a tutorial step, a condition that shows a UI element, a parameter value on an item. The usual approaches — an `enum` + `switch`, a `MonoBehaviour` per behaviour, or a pile of boolean flags — blur quickly: every new behaviour needs a code change and a recompile, logic scatters across the project, and a game designer can't assemble a variant on their own.
+Games constantly grow small behaviours: an effect applied to a unit on spawn, a tutorial step, a condition that shows a UI element, a parameter value on an item. The usual approaches — an `enum` + `switch`, a `MonoBehaviour` per behaviour, or a pile of boolean flags — blur quickly: every new behaviour needs a code change and a recompile, logic scatters across the project, and assembling a new variant means touching code and recompiling.
 
 Configurators moves rule assembly into the Inspector. Each behaviour is its own small serializable class; in the Inspector they stack into a polymorphic list you can change without touching the consuming code.
 
@@ -77,17 +75,23 @@ public class SetMaxHealth : Modification<Unit>
 }
 ```
 
-Which buffs apply, in what order, with what parameters — all authored in the Inspector. Adding a new type is a class; assembling a specific set is a designer's job, not a programmer's.
+Which buffs apply, in what order, with what parameters — all authored in the Inspector. Adding a new type means writing a class; assembling and tuning a specific set is Inspector work — no code, no recompile.
+
+<p align="center">
+  <img src="Documentation~/why.gif" alt="Assembling a modification list in the Inspector: the typed dropdown and field configuration" width="620">
+</p>
+
+But the Inspector itself runs nothing — it's only assembly and configuration. The logic comes from Configurators: it implements those components and **runs** what you assembled — pulling handlers from a pool, injecting their dependencies, running async steps in order, and cancelling them by the object's lifetime. And rename a class or move it to another folder — your already-configured assets don't collapse into null: type references are held by StableRef, not by the fragile name baked into `[SerializeReference]`.
 
 ---
 
 ## Highlights
 
 - **Rules in the Inspector, no code changes** — behaviours stack into polymorphic lists on top of `[SerializeReference]`; a new behaviour is a new class, the consuming code is untouched.
-- **Survives refactoring** — type references are held by [StableRef](https://github.com/SST-Systems/StableRef), so renaming or moving a class doesn't break assets you've already configured.
+- **Survives renames** — type references are held by [StableRef](https://github.com/SST-Systems/StableRef), not by the class name. Rename a class or move it to another folder and your already-configured assets and scenes don't turn into "missing type" or lose data — the way they do with raw `[SerializeReference]`.
 - **Handlers are pooled** — runtime logic is taken from a pool and returned to it, with no allocations per run.
 - **Any DI** — handlers get their dependencies through your container (Zenject, VContainer, …) or a service locator; a ready-made Zenject integration ships as a sample.
-- **Async and cancellation out of the box** — steps that genuinely wait (asset load, delay, network request) are written as `async`; cancellation is bound to the object's lifetime.
+- **Async and cancellation out of the box** — steps that genuinely wait (asset load, delay, network request) are written as `async` and drop into the same chain as ordinary steps; cancellation is bound to the object's lifetime — destroy the object and in-flight steps stop with it, no coroutine bookkeeping.
 - **Four modules for different jobs** — Modifications (effects on a context), Instructions (context-free commands), Conditions (reactive predicates with composition), Extensions (value carriers).
 
 ---
@@ -111,59 +115,49 @@ Unity 2021.3+
 
 ## Quick Start
 
-A minimal end-to-end example on the Instructions module — from class to run. The other three modules work the same way.
+A minimal end-to-end example on the Modifications module — from class to run. The other three modules work the same way.
 
-**1. Describe a behaviour** — a small serializable class:
+**1. Describe a behaviour** — the same class from [Why](#why):
 
 ```csharp
-[Serializable, StableRefCategory("UI")]
-public class ChangeTextColor : Instruction
+[Serializable, StableRefCategory("Stats")]
+public class SetMaxHealth : Modification<Unit>
 {
-    [SerializeField] private Text target;
-    [SerializeField] private Color color = Color.white;
-
-    public override void Apply()
-    {
-        if (target)
-            target.color = color;
-    }
+    public int Value;
+    public override void Apply(Unit unit) => unit.Health.SetMax(Value);
 }
 ```
 
-**2. Put an `InstructionProcessor` on a component and assemble the list in the Inspector** — the typed dropdown lists all your behaviours:
+**2. Put a `ModificationProcessor<Unit>` on a component or config and assemble the list in the Inspector** — the typed dropdown lists all your behaviours.
 
-<p align="center">
-  <img src="Documentation~/samples/instructions.gif" alt="Assembling a button's instruction chain in the Inspector" width="800">
-</p>
-
-**3. Resolve once and run:**
+**3. Resolve once and apply to a context:**
 
 ```csharp
-public class ButtonActions : MonoBehaviour
+public class UnitSpawner : MonoBehaviour
 {
-    [SerializeField] private InstructionProcessor instructions;
+    [SerializeField] private ModificationProcessor<Unit> modifications;
 
     // Manager — create manually or get it from DI
-    private readonly IInstructionManager _manager = new InstructionManager();
+    private readonly IModificationManager _manager = new ModificationManager();
 
-    private void Awake() => _manager.ResolveInstructions(instructions, lifetimeOwner: this);
+    private void Awake() => _manager.ResolveModifications(modifications, lifetimeOwner: this);
 
-    // Hook to Button.onClick — plays the chain top to bottom (sync + async steps)
-    public void Run() => instructions.Apply();
+    // Configure a freshly spawned unit — applies the list top to bottom
+    public async Task Configure(Unit unit) => await modifications.Apply(unit);
 }
 ```
 
-New steps are added in the Inspector, order is drag-and-drop; `ButtonActions` never changes. `lifetimeOwner: this` ties cleanup to the object — everything is released automatically when it's destroyed.
+New buffs are added in the Inspector, order is drag-and-drop; `UnitSpawner` never changes. `lifetimeOwner: this` ties cleanup to the object — everything is released automatically when it's destroyed.
 
 ---
 
 ## Samples
 
-Runnable examples, one per module — import via `Window → Package Manager → Configurators → Samples`.
+Runnable examples, one per module — import via `Window → Package Manager → Configurators → Samples`. Want to see how it looks in the Inspector and at runtime — open the samples: each has a GIF and a working example.
 
 | Sample | Module | What it shows |
 |---|---|---|
-| [Instructions for Button](Samples~/Instructions for Button/README.md) | Instructions | A UI button running a designer-authored chain per pointer event — sequential and async steps, cancellation. Ships with a scene. |
+| [Instructions for Button](Samples~/Instructions for Button/README.md) | Instructions | A UI button running an authored chain per pointer event — sequential and async steps, cancellation. Ships with a scene. |
 | [Modifications for Object](Samples~/Modifications for Object/README.md) | Modifications | Spawns an image every second and configures each one via the same modification list applied as context — retune the look in the Inspector, spawner code unchanged. |
 | [Conditions for Visibility](Samples~/Conditions for Visibility/README.md) | Conditions | UI toggles drive a two-state panel through a controller — condition combinations pick the state, its instructions restyle it (Conditions + Instructions combined). |
 | [Extensions for Config](Samples~/Extensions for Config/README.md) | Extensions | A config carries optional extensions; the view renders only those present. |
@@ -183,6 +177,8 @@ Plus [Zenject For Configurators](Samples~/Zenject For Configurators) — a ready
 | **Processor** | Container holding a list of elements for one module. Lives on a config or component. |
 | **Handler** | Pooled runtime logic for a data object. Required when you need injectable dependencies. |
 | **HandlerFactory** | Controls how handler instances are created. Default is `Activator.CreateInstance`. |
+| **Manager** | A module's entry point: resolves processors (creates and binds handlers) and owns their lifetime. One per module — `IInstructionManager`, `IModificationManager`, etc. |
+| **Binding** | The `IDisposable` returned by `Resolve*`. While it's alive, handlers are bound and the processor is active; on dispose, handlers return to the pool and everything is cleaned up. |
 
 ---
 
@@ -205,7 +201,14 @@ Each component injects only the interface it actually needs.
 
 Handlers are pooled runtime objects — they're created once, reused, and returned to the pool on dispose. Because of this they can't be instantiated with `new` by a standard DI container: the container doesn't know when to create them or how many to produce. The factory bridges that gap: it's the single place that knows how to construct a handler, so it can delegate to the DI container and get all dependencies injected automatically.
 
-Managers delegate handler instantiation to `IHandlerFactory`:
+Managers delegate handler instantiation to `IHandlerFactory`. **By default — `ActivatorHandlerFactory`** — creates them via `Activator.CreateInstance`. Works when handlers have no dependencies (or resolve them manually via a service locator). That's enough to get started.
+
+If your handlers need DI, plug in your own factory so the container does the construction. A ready-made Zenject integration (factory + installer with bindings) ships in the [Zenject For Configurators](Samples~/Zenject For Configurators) sample.
+
+<details>
+<summary><b>Your own factory for DI</b></summary>
+
+Managers take handlers from `IHandlerFactory`:
 
 ```csharp
 public interface IHandlerFactory
@@ -214,9 +217,7 @@ public interface IHandlerFactory
 }
 ```
 
-**Default — `ActivatorHandlerFactory`** — creates handlers via `Activator.CreateInstance`. Works when handlers have no dependencies (or resolve them manually via a service locator).
-
-**Custom factory** — implement `IHandlerFactory` to have the DI container create handlers and inject their dependencies:
+Implement it so the DI container constructs the instance:
 
 ```csharp
 public class ZenjectHandlerFactory : IHandlerFactory
@@ -227,26 +228,9 @@ public class ZenjectHandlerFactory : IHandlerFactory
 }
 ```
 
-With this in place, any handler can declare its own constructor or `[Inject]` fields and receive dependencies exactly like any other class — the factory takes care of the rest.
+With this in place, any handler can declare its own `[Inject]` fields and receive dependencies like any other class — the factory takes care of the rest. For how to bind the factory and managers, see the installer in the [Zenject For Configurators](Samples~/Zenject For Configurators) sample.
 
-#### Zenject
-
-```csharp
-public class ConfiguratorsZenjectInstaller : MonoInstaller
-{
-    public override void InstallBindings()
-    {
-        Container.Bind<IHandlerFactory>().To<ZenjectHandlerFactory>().AsSingle();
-
-        Container.Bind<IInstructionManager>().To<InstructionManager>().AsSingle();
-        Container.Bind<IModificationManager>().To<ModificationManager>().AsSingle();
-        Container.Bind<IConditionManager>().To<ConditionManager>().AsSingle();
-        Container.Bind<IExtensionManager>().To<ExtensionManager>().AsSingle();
-    }
-}
-```
-
-Ready-made integration in [`Samples~/Zenject For Configurators/`](Samples~/Zenject For Configurators/).
+</details>
 
 ---
 
@@ -272,6 +256,8 @@ await processor.Apply(context);
 ### Modifications Module
 
 Modifications apply effects to a context — a unit, an entity, any data object. Example use cases: configure actor stats on spawn, apply item effects to a player, alter level parameters. All logic is described in the Inspector with no code changes. Modifications run **sequentially**; each step can be synchronous or, when it needs to wait for something (load an asset, fetch a value), asynchronous — the next one starts only after the current finishes.
+
+The same list applies to one object or to every one of a hundred spawned: author the rules once, apply them to any number.
 
 The simplest form — an inline modification with a synchronous `Apply`:
 
@@ -415,11 +401,15 @@ _modificationManager.ResolveModifications(processor, lifetimeOwner: newOwner);
 
 </details>
 
+**Working example:** [Modifications for Object](Samples~/Modifications for Object/README.md)
+
 ---
 
 ### Instructions Module
 
 Instructions are commands with no context. Targets are stored as inspector references on the data class. Instructions run sequentially — each one starts only after the previous finishes. A step can be synchronous or asynchronous (delays, awaits, cancellation). Typical use cases: level event sequences, animation chains, tutorial steps, delays between actions.
+
+You used to build such a sequence — "show a hint → wait 2s → highlight the button → wait for the click" — with a coroutine or a hand-rolled state machine, and every change meant editing code and recompiling. Here it's a list in the Inspector: steps are drag-reordered, waiting ones are written as `async`, and when the object is destroyed the whole chain stops on its own.
 
 The simplest form — an inline instruction with a synchronous `Apply`:
 
@@ -587,11 +577,15 @@ _instructionManager.ResolveInstructions(processor, lifetimeOwner: newOwner);
 
 </details>
 
+**Working example:** [Instructions for Button](Samples~/Instructions for Button/README.md)
+
 ---
 
 ### Conditions Module
 
 Conditions are boolean predicates with change subscriptions. They handle reactive display and behaviour: show/hide UI, activate/deactivate objects, toggle mechanics — based on game state. Conditions can be composed with `All`, `Any`, `None`, `Not`.
+
+Subscribe to the processor once and the callback fires on its own on every change — no manually fanning events from health, inventory, and a timer out to every subscriber. And an `All`/`Any`/`Not` tree assembled in the Inspector notifies as a single condition.
 
 The simplest form — an inline condition polled directly via `IsMet()`:
 
@@ -647,10 +641,6 @@ public class HealthBelowHandler : ConditionHandler<HealthBelow>
 </details>
 
 **Running it** — resolve once, then subscribe; the callback fires immediately with the current state and again on every change:
-
-<p align="center">
-  <img src="Documentation~/conditions.gif" alt="Reactive UI toggling by a condition at runtime" width="720">
-</p>
 
 ```csharp
 public class UIHealthWarning : MonoBehaviour
@@ -711,11 +701,15 @@ Added in the Inspector like regular conditions. Listeners fire once per inner ch
 
 </details>
 
+**Working example:** [Conditions for Visibility](Samples~/Conditions for Visibility/README.md)
+
 ---
 
 ### Extensions Module
 
 Extensions are value carriers. They let you attach arbitrary values — cooldown, max count, radius, an icon, a prefab — to any config or component without modifying its class. Values can be authored directly in the Inspector, or produced at runtime by a handler (load a sprite from an asset manager by id, look up a value in a database, or simply fetch it at runtime from a manager).
+
+No need to bloat a config with a dozen just-in-case optional fields — an icon not everything has, a cooldown only a couple of items need. Attach an extension only where it's actually used; the view reads only the ones present and knows nothing about the rest.
 
 The simplest form — an inline extension with a synchronous `GetValue`:
 
@@ -829,6 +823,8 @@ foreach (var tag in config.Extensions.GetExtensions<Tag>())
 > **Note.** `TryGetExtension` returns the first match and logs a warning if there are several — use `GetExtensions<T>` to enumerate them all.
 
 </details>
+
+**Working example:** [Extensions for Config](Samples~/Extensions for Config/README.md)
 
 ---
 
