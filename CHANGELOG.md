@@ -1,6 +1,6 @@
 # Configurators
 
-## 3.0.1 - 13.07.2026
+## 3.0.1 - 14.07.2026
 
 Samples overhaul — clearer, self-contained examples. No runtime API changes.
 
@@ -10,6 +10,9 @@ Samples overhaul — clearer, self-contained examples. No runtime API changes.
 - Made each sample's configurators distinct, so importing all samples at once introduces no duplicate behaviours.
 - Renamed serialized fields for clarity: `ExtensionProcessor` on `CurrencyConfig`, `modificationProcessor` on `ShapeSpawner`.
 - Docs: added English/Russian READMEs for the Zenject sample, rewrote the sample READMEs in plainer language, refreshed the sample table and fixed links in the main README, and tidied in-code comments across all samples.
+- Fixed the sample links in the main README that broke on spaces in `Samples~/...` paths (now URL-encoded).
+- Aligned the Modifications module example with the Quick Start — shared `Unit` context and `EnemySpawner`, so the two sections read consistently (no API change).
+- Added a "Usage Lifecycle" section with a block diagram (`Documentation~/lifecycle.svg`, `lifecycle.ru.svg`) to both READMEs, showing how to pick a module and the shared resolve → use → cleanup flow.
 
 ## 3.0.0 - 10.07.2026
 
