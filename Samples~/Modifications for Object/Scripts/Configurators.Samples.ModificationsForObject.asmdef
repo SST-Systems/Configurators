@@ -1,0 +1,17 @@
+{
+    "name": "Configurators.Samples.ModificationsForObject",
+    "rootNamespace": "SST.Configurators.Samples.ModificationsForObject",
+    "references": [
+        "Configurators",
+        "StableRef"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

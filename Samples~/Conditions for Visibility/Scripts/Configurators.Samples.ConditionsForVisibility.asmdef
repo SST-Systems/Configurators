@@ -1,0 +1,17 @@
+{
+    "name": "Configurators.Samples.ConditionsForVisibility",
+    "rootNamespace": "SST.Configurators.Samples.ConditionsForVisibility",
+    "references": [
+        "Configurators",
+        "StableRef"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

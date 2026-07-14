@@ -1,0 +1,17 @@
+{
+    "name": "Configurators.Samples.ZenjectForConfigurators",
+    "rootNamespace": "SST.Configurators.Samples.ZenjectForConfigurators",
+    "references": [
+        "Configurators",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

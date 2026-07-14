@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2202bdab18c457d4f9ed49ed57367315, type: 3}
+  m_Name: Currency Soft
+  m_EditorClassIdentifier: 
+  id: Soft
+  amount: 5
+  extensionProcessor:
+    Extensions:
+      _items:
+      - TypeId: 83d86e707fcca284992153e77524ed53
+        TypeDisplayName: DisplayName
+        ObjectRefs: []
+        ObjectRefPaths: []
+        ValuesData: value=Soft
+        Value:
+          rid: 5218601323263164504
+      - TypeId: 9ed2979784890a14d803463d196ed7cd
+        TypeDisplayName: Abbreviation
+        ObjectRefs: []
+        ObjectRefPaths: []
+        ValuesData: value=Default
+        Value:
+          rid: 5218601323263164512
+      - TypeId: 2e6b2e1ae4d4aff42b86898b03c45bab
+        TypeDisplayName: IconById
+        ObjectRefs: []
+        ObjectRefPaths: []
+        ValuesData: Id=Box
+        Value:
+          rid: 5218601323263164509
+  references:
+    version: 2
+    RefIds:
+    - rid: 5218601323263164504
+      type: {class: DisplayName, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: Configurators.Samples.ExtensionsForConfig}
+      data:
+        value: Soft
+    - rid: 5218601323263164509
+      type: {class: IconById, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: Configurators.Samples.ExtensionsForConfig}
+      data:
+        Id: Box
+    - rid: 5218601323263164512
+      type: {class: Abbreviation, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: Configurators.Samples.ExtensionsForConfig}
+      data:
+        value: Default
