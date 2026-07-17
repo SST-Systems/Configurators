@@ -24,7 +24,7 @@
   "licensesUrl": "https://github.com/SST-Systems/Configurators/blob/main/LICENSE.md",
   "dependencies": {
     "com.sst-systems.pooling": "1.0.1",
-    "com.sst-systems.stableref": "1.0.2"
+    "com.sst-systems.stableref": "1.1.0"
   },
   "samples": [
     {
