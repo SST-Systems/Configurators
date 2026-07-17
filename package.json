@@ -1,6 +1,6 @@
 {
   "name": "com.sst-systems.configurators",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "displayName": "Configurators",
   "description": "Serializable, pooled, DI-ready system for gameplay rules. Covers modifications (one-shot effects on a context), instructions (contextless effects), conditions (boolean predicates with change notifications), and extensions (passive value carriers). All built from polymorphic inspector lists backed by StableRef.",
   "unity": "2021.3",
@@ -24,7 +24,7 @@
   "licensesUrl": "https://github.com/SST-Systems/Configurators/blob/main/LICENSE.md",
   "dependencies": {
     "com.sst-systems.pooling": "1.0.1",
-    "com.sst-systems.stableref": "1.0.2"
+    "com.sst-systems.stableref": "1.1.0"
   },
   "samples": [
     {
@@ -48,9 +48,9 @@
       "path": "Samples~/Extensions for Config"
     },
     {
-      "displayName": "Zenject For Configurators",
+      "displayName": "Zenject for Configurators",
       "description": "Zenject DI container integration - ZenjectHandlerFactory and installer binding for ConfiguratorManager.",
-      "path": "Samples~/Zenject For Configurators"
+      "path": "Samples~/Zenject for Configurators"
     }
   ]
 }

@@ -136,15 +136,15 @@ public class SetMaxHealth : Modification<Unit>
 ```csharp
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private ModificationProcessor<Unit> modifications;
+    [SerializeField] private ModificationProcessor<Unit> modificationProcessor;
 
     // Менеджер — создай вручную или получи из DI
     private readonly IModificationManager _manager = new ModificationManager();
 
-    private void Awake() => _manager.ResolveModifications(modifications, lifetimeOwner: this);
+    private void Awake() => _manager.ResolveModifications(modificationProcessor, lifetimeOwner: this);
 
     // Настроить только что созданного юнита — применяет список сверху вниз
-    public async Task Configure(Unit unit) => await modifications.Apply(unit);
+    public async Task Configure(Unit unit) => await modificationProcessor.Apply(unit);
 }
 ```
 
@@ -163,7 +163,7 @@ public class EnemySpawner : MonoBehaviour
 | [Conditions for Visibility](Samples~/Conditions%20for%20Visibility/README.ru.md) | Conditions | UI-флажки через контроллер управляют двухсостояночной панелью — комбинация условий выбирает состояние, а его инструкции меняют вид (Conditions + Instructions вместе). |
 | [Extensions for Config](Samples~/Extensions%20for%20Config/README.ru.md) | Extensions | Конфиг несёт опциональные экстеншены; вьюшка рисует только присутствующие. |
 
-Плюс [Zenject For Configurators](Samples~/Zenject%20For%20Configurators) — готовая `IHandlerFactory` и инсталлер.
+Плюс [Zenject for Configurators](Samples~/Zenject%20for%20Configurators) — готовая `IHandlerFactory` и инсталлер.
 
 ---
 
@@ -171,10 +171,10 @@ public class EnemySpawner : MonoBehaviour
 
 | Термин | Что это |
 |---|---|
-| **Modification** | Единица работы, применяемая к `TContext`, выполняется последовательно. Например: «выставить max HP», «добавить тег». |
+| **Modification** | Единица работы, применяемая к `TContext`, выполняется последовательно. Например: `SetMaxHealth`, `AddTag`. |
 | **Instruction** | Команда без контекста — цели хранятся прямо в инспекторных полях, выполняется последовательно. Например: `GameObjectSetActive`, `PlaySound`, `WaitForSeconds`. |
-| **Condition** | Булево условие с подпиской на изменения (`AddListener`) и прямой проверкой (`IsMet`). |
-| **Extension** | Носитель значения, прикреплённый к конфигу или компоненту, читается по запросу. Например: кулдаун, максимальное количество, иконка. |
+| **Condition** | Булево условие с подпиской на изменения (`AddListener`) и прямой проверкой (`IsMet`). Например: `HealthBelow`, `IsNight`. |
+| **Extension** | Носитель значения, прикреплённый к конфигу или компоненту, читается по запросу. Например: `Cooldown`, `MaxCount`, `IconById`. |
 | **Processor** | Контейнер со списком элементов одного модуля. Лежит на конфиге или компоненте. |
 | **Handler** | Пулящаяся runtime-логика для data-объекта. Нужен когда требуются внешние зависимости или инжект через DI. |
 | **HandlerFactory** | Контролирует создание хендлеров. По умолчанию — `Activator.CreateInstance`. |
@@ -204,7 +204,7 @@ IExtensionManager extensionManager = new ExtensionManager();
 
 Менеджеры делегируют создание хендлеров в `IHandlerFactory`. **По умолчанию — `ActivatorHandlerFactory`** — создаёт их через `Activator.CreateInstance`. Работает, когда у хендлеров нет зависимостей (или они берут их вручную через сервис-локатор). Для старта этого достаточно.
 
-Если хендлерам нужен DI — подключи свою фабрику, чтобы созданием занимался контейнер. Готовая интеграция с Zenject (фабрика + инсталлер с биндингами) лежит в сэмпле [Zenject For Configurators](Samples~/Zenject%20For%20Configurators).
+Если хендлерам нужен DI — подключи свою фабрику, чтобы созданием занимался контейнер. Готовая интеграция с Zenject (фабрика + инсталлер с биндингами) лежит в сэмпле [Zenject for Configurators](Samples~/Zenject%20for%20Configurators).
 
 <details>
 <summary><b>Своя фабрика под DI</b></summary>
@@ -229,7 +229,7 @@ public class ZenjectHandlerFactory : IHandlerFactory
 }
 ```
 
-После этого любой хендлер может объявить собственные поля с `[Inject]` и получать зависимости как любой другой класс — фабрика возьмёт это на себя. Как забиндить фабрику и менеджеры — смотри инсталлер в сэмпле [Zenject For Configurators](Samples~/Zenject%20For%20Configurators).
+После этого любой хендлер может объявить собственные поля с `[Inject]` и получать зависимости как любой другой класс — фабрика возьмёт это на себя. Как забиндить фабрику и менеджеры — смотри инсталлер в сэмпле [Zenject for Configurators](Samples~/Zenject%20for%20Configurators).
 
 </details>
 
@@ -246,10 +246,10 @@ public class ZenjectHandlerFactory : IHandlerFactory
 IModificationManager manager = new ModificationManager();
 
 // 2. Резолв перед использованием — привязывает хендлеры
-manager.ResolveModifications(processor, lifetimeOwner: this);
+manager.ResolveModifications(modificationProcessor, lifetimeOwner: this);
 
 // 3. Запуск после резолва — Apply возвращает Task; await, если нужно дождаться async-шагов
-await processor.Apply(context);
+await modificationProcessor.Apply(context);
 ```
 
 > **О примерах.** Примеры кода ниже не используют DI-контейнер. `ServiceLocator.Get<T>()` — условное обозначение: как именно ты получаешь менеджеры (ручное создание, Zenject, VContainer или любой другой подход) — полностью на твоё усмотрение. `Unit`, `PlayerHealth`, `IGameFactory`, `ISkinService` и аналогичные типы — проектные плейсхолдеры; подставь свои.
@@ -349,7 +349,7 @@ public class ApplySkinHandler : AsyncModificationHandler<ApplySkin, Unit>
 ```csharp
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private ModificationProcessor<Unit> modifications;
+    [SerializeField] private ModificationProcessor<Unit> modificationProcessor;
 
     private readonly IModificationManager _modificationManager = ServiceLocator.Get<IModificationManager>();
     // С Zenject: [Inject] private readonly IModificationManager _modificationManager;
@@ -357,13 +357,13 @@ public class EnemySpawner : MonoBehaviour
     private void Awake()
     {
         // Резолв один раз — хендлеры привязаны, цепочка отменится при уничтожении объекта
-        _modificationManager.ResolveModifications(modifications, lifetimeOwner: this);
+        _modificationManager.ResolveModifications(modificationProcessor, lifetimeOwner: this);
     }
 
     // Сконфигурировать только что заспавненного юнита — ждём каждую модификацию по порядку
     public async Task Configure(Unit unit)
     {
-        try { await modifications.Apply(unit); }
+        try { await modificationProcessor.Apply(unit); }
         catch (OperationCanceledException) { /* юнит или спавнер уничтожен во время конфигурации */ }
     }
 }
@@ -376,16 +376,16 @@ public class EnemySpawner : MonoBehaviour
 
 > **Отмена.** Диспоз биндинга или уничтожение `lifetimeOwner` отменяет выполняющиеся async-запуски. Можно также передать свой токен в `Apply`. Прокидывай токен во все `await` внутри async-модификаций (и вызывай `cancellationToken.ThrowIfCancellationRequested()` в циклах), иначе текущий шаг доработает до конца прежде чем остановится.
 
-> **Конкурентность.** Процессор не хранит состояние запуска, поэтому один процессор можно применять сразу к нескольким объектам — например `await Task.WhenAll(units.Select(u => modifications.Apply(u)))`. Цепочка каждого контекста выполняется независимо (и по порядку внутри себя). Безопасно, пока хендлеры не хранят per-call состояние в полях — контекст приходит параметром, а не сохраняется.
+> **Конкурентность.** Процессор не хранит состояние запуска, поэтому один процессор можно применять сразу к нескольким объектам — например `await Task.WhenAll(units.Select(u => modificationProcessor.Apply(u)))`. Цепочка каждого контекста выполняется независимо (и по порядку внутри себя). Безопасно, пока хендлеры не хранят per-call состояние в полях — контекст приходит параметром, а не сохраняется.
 
 Ручной контроль (`lifetimeOwner: null`):
 
 ```csharp
 private IDisposable _binding;
 
-private void Setup(ModificationProcessor<SomeContext> processor)
+private void Setup(ModificationProcessor<SomeContext> modificationProcessor)
 {
-    _binding = _modificationManager.ResolveModifications(processor, lifetimeOwner: null);
+    _binding = _modificationManager.ResolveModifications(modificationProcessor, lifetimeOwner: null);
 }
 
 private void Cleanup()
@@ -397,7 +397,7 @@ private void Cleanup()
 **Повторный резолв** — вызов `ResolveModifications` на уже резолвнутом процессоре автоматически диспозит предыдущий биндинг и создаёт новый. Используй чтобы передать контроль новому `lifetimeOwner`:
 
 ```csharp
-_modificationManager.ResolveModifications(processor, lifetimeOwner: newOwner);
+_modificationManager.ResolveModifications(modificationProcessor, lifetimeOwner: newOwner);
 ```
 
 </details>
@@ -521,7 +521,7 @@ public class PlaySoundHandler : AsyncInstructionHandler<PlaySound>
 ```csharp
 public class TutorialController : MonoBehaviour
 {
-    [SerializeField] private InstructionProcessor steps;
+    [SerializeField] private InstructionProcessor instructionProcessor;
 
     private readonly IInstructionManager _instructionManager = ServiceLocator.Get<IInstructionManager>();
     // С Zenject: [Inject] private readonly IInstructionManager _instructionManager;
@@ -529,23 +529,23 @@ public class TutorialController : MonoBehaviour
     private void Awake()
     {
         // Резолв один раз — хендлеры привязаны, цепочка отменится при уничтожении объекта
-        _instructionManager.ResolveInstructions(steps, lifetimeOwner: this);
+        _instructionManager.ResolveInstructions(instructionProcessor, lifetimeOwner: this);
     }
 
     // Запустить цепочку — повторный вызов автоматически отменяет предыдущий запуск
     public void StartTutorial()
     {
-        steps.Apply();
+        instructionProcessor.Apply();
     }
 
     // Запустить и дождаться завершения всей цепочки
     public async Task StartAndAwait()
     {
-        steps.Apply();
+        instructionProcessor.Apply();
 
         try
         {
-            await steps.ExecutionTask;
+            await instructionProcessor.ExecutionTask;
             Debug.Log("Все инструкции выполнены");
         }
         catch (OperationCanceledException)
@@ -555,7 +555,7 @@ public class TutorialController : MonoBehaviour
     }
 
     // Досрочная отмена без перезапуска
-    public void StopTutorial() => steps.Cancel();
+    public void StopTutorial() => instructionProcessor.Cancel();
 }
 ```
 
@@ -566,14 +566,14 @@ public class TutorialController : MonoBehaviour
 
 > **Отмена.** При диспозе биндинга или уничтожении `lifetimeOwner` текущая цепочка отменяется; повторный `Apply` отменяет предыдущий запуск. В своих async-инструкциях прокидывай токен во все `await` (`Task.Delay(ms, cancellationToken)`, `UniTask.Delay(...)` и т.д.) и вызывай `cancellationToken.ThrowIfCancellationRequested()` в циклах — иначе текущий шаг доработает до конца прежде чем остановится.
 
-**`processor.ExecutionTask`** — таска текущего выполнения. Awaить снаружи чтобы дождаться завершения всей цепочки. При отмене завершается с `OperationCanceledException`.
+**`instructionProcessor.ExecutionTask`** — таска текущего выполнения. Awaить снаружи чтобы дождаться завершения всей цепочки. При отмене завершается с `OperationCanceledException`.
 
-**`processor.Cancel()`** — отменяет текущую выполняющуюся цепочку без перезапуска.
+**`instructionProcessor.Cancel()`** — отменяет текущую выполняющуюся цепочку без перезапуска.
 
 **Повторный резолв** — вызов `ResolveInstructions` на уже резолвнутом процессоре диспозит предыдущий биндинг и передаёт контроль новому `lifetimeOwner`:
 
 ```csharp
-_instructionManager.ResolveInstructions(processor, lifetimeOwner: newOwner);
+_instructionManager.ResolveInstructions(instructionProcessor, lifetimeOwner: newOwner);
 ```
 
 </details>
@@ -646,7 +646,7 @@ public class HealthBelowHandler : ConditionHandler<HealthBelow>
 ```csharp
 public class UIHealthWarning : MonoBehaviour
 {
-    [SerializeField] private ConditionProcessor conditions;
+    [SerializeField] private ConditionProcessor conditionProcessor;
 
     private readonly IConditionManager _conditionManager = ServiceLocator.Get<IConditionManager>();
     // С Zenject: [Inject] private readonly IConditionManager _conditionManager;
@@ -654,10 +654,10 @@ public class UIHealthWarning : MonoBehaviour
     private void Awake()
     {
         // Резолв один раз — хендлеры привязаны, диспоз при уничтожении объекта
-        _conditionManager.ResolveConditions(conditions, lifetimeOwner: this);
+        _conditionManager.ResolveConditions(conditionProcessor, lifetimeOwner: this);
 
         // Подписка напрямую на процессоре
-        conditions.Subscribe(isMet => gameObject.SetActive(isMet));
+        conditionProcessor.Subscribe(isMet => gameObject.SetActive(isMet));
     }
 }
 ```
@@ -668,24 +668,24 @@ public class UIHealthWarning : MonoBehaviour
 Прямая проверка без подписки:
 
 ```csharp
-if (_conditions.IsMet())
+if (conditionProcessor.IsMet())
 {
     // выполнить действие
 }
 ```
 
-**`processor.Subscribe(Action<bool> onChanged)`** — регистрирует колбэк, который вызывается сразу с текущим результатом `IsMet()`, а затем при каждом изменении любого условия. Поддерживается несколько подписчиков одновременно.
+**`conditionProcessor.Subscribe(Action<bool> onChanged)`** — регистрирует колбэк, который вызывается сразу с текущим результатом `IsMet()`, а затем при каждом изменении любого условия. Поддерживается несколько подписчиков одновременно.
 
-**`processor.Unsubscribe(Action<bool> onChanged)`** — удаляет конкретный колбэк. Слушатели условий снимаются автоматически когда отписывается последний подписчик.
+**`conditionProcessor.Unsubscribe(Action<bool> onChanged)`** — удаляет конкретный колбэк. Слушатели условий снимаются автоматически когда отписывается последний подписчик.
 
-**`processor.UnsubscribeAll()`** — удаляет всех подписчиков и слушателей разом. Используется менеджером при диспозе биндинга.
+**`conditionProcessor.UnsubscribeAll()`** — удаляет всех подписчиков и слушателей разом. Используется менеджером при диспозе биндинга.
 
-**`processor.IsMet()`** — прямая проверка всех условий без подписки. Возвращает `true` если список пуст. Все условия должны быть выполнены (аналог `All`).
+**`conditionProcessor.IsMet()`** — прямая проверка всех условий без подписки. Возвращает `true` если список пуст. Все условия должны быть выполнены (аналог `All`).
 
-**Повторный резолв** — вызов `ResolveConditions` на уже резолвнутом процессоре диспозит предыдущий биндинг (отвязывает хендлеры и вызывает `processor.UnsubscribeAll()`) и передаёт контроль новому `lifetimeOwner`:
+**Повторный резолв** — вызов `ResolveConditions` на уже резолвнутом процессоре диспозит предыдущий биндинг (отвязывает хендлеры и вызывает `conditionProcessor.UnsubscribeAll()`) и передаёт контроль новому `lifetimeOwner`:
 
 ```csharp
-_conditionManager.ResolveConditions(processor, lifetimeOwner: newOwner);
+_conditionManager.ResolveConditions(conditionProcessor, lifetimeOwner: newOwner);
 ```
 
 **Композитные условия** — `All`, `Any`, `None`, `Not` комбинируют условия и вкладываются друг в друга:
@@ -699,6 +699,52 @@ All
 ```
 
 Добавляются в инспекторе как обычные условия. Слушатели на композите срабатывают один раз на каждое изменение внутри, независимо от количества внешних подписчиков.
+
+</details>
+
+<details>
+<summary><b>Условия с контекстом — <code>Condition&lt;TContext&gt;</code></b></summary>
+
+У каждого типа условия есть контекстный «близнец», который лежит в том же файле и отличается лишь параметром-шаблоном — тот же приём, что и в модуле Modifications. Нужен, когда предикат вычисляется относительно объекта (`Unit`, `Shape`, виджет), а не тянет всё из сервисов: контекст передаётся в `IsMet(TContext context)`, ровно как `Modification.Apply(TContext context)`.
+
+| Без контекста | С контекстом |
+| --- | --- |
+| `ICondition` / `Condition` | `ICondition<TContext>` / `Condition<TContext>` |
+| `ConditionData<THandler>` | `ConditionData<TContext, THandler>` |
+| `IConditionHandler` / `ConditionHandler<TData>` | `IConditionHandler<TContext>` / `ConditionHandler<TData, TContext>` |
+| `All` / `Any` / `None` / `Not` | `All<TContext>` / `Any<TContext>` / `None<TContext>` / `Not<TContext>` |
+| `ConditionProcessor` | `ConditionProcessor<TContext>` |
+
+```csharp
+// Inline-условие с контекстом
+[Serializable]
+[StableRefCategory("Health")]
+public class HealthBelow : Condition<Unit>
+{
+    [Range(0, 1)] public float Threshold;
+    public override bool IsMet(Unit unit) => unit.Health.Ratio < Threshold;
+}
+```
+
+Повесь `ConditionProcessor<Unit>` на компонент и собери `All<Unit>` / `Any<Unit>` / `Not<Unit>` в инспекторе — композит прокидывает один и тот же контекст всем детям, поэтому всё дерево строго типизировано одним `TContext` (смешать условия с разными контекстами нельзя).
+
+```csharp
+[SerializeField] private ConditionProcessor<Unit> conditionProcessor;
+
+private void Setup(Unit unit)
+{
+    // Резолв хендлеров — перегрузка того же менеджера
+    _conditionManager.ResolveConditions(conditionProcessor, lifetimeOwner: this);
+
+    // Реактивно: каждый подписчик передаёт свой контекст
+    conditionProcessor.Subscribe(unit, met => retreatButton.SetActive(met));
+
+    // Или прямой опрос
+    if (conditionProcessor.IsMet(unit)) { /* ... */ }
+}
+```
+
+Сам сигнал изменения остаётся без контекста (`AddListener` / `NotifyChanged` не изменились) — при каждом изменении каждый подписчик перевычисляется со своим контекстом, так что один процессор может обслуживать несколько контекстов сразу. Условия с хендлером работают так же, как и без контекста (`OnFirstListenerAdded` / `OnLastListenerRemoved` + `NotifyChanged`), только `IsMet(TContext)` получает контекст.
 
 </details>
 
@@ -799,9 +845,9 @@ public class SpriteByIdHandler : AsyncExtensionHandler<SpriteById, Sprite>
 **Запуск с хендлером** — зарезолвить один раз, затем awaить значение по запросу. Свой токен линкуется с resolve-токеном:
 
 ```csharp
-_extensionManager.ResolveExtensions(extensions, lifetimeOwner: this);
+_extensionManager.ResolveExtensions(extensionProcessor, lifetimeOwner: this);
 
-if (extensions.TryGetExtension(out SpriteById icon))
+if (extensionProcessor.TryGetExtension(out SpriteById icon))
     image.sprite = await icon.GetValueAsync(cancellationToken);
 ```
 
@@ -853,6 +899,8 @@ public class MaxCount : Extension<int> { ... }
 
 Если нужен полиморфный список вне встроенных процессоров — используй `StableRefList<T>` напрямую, это тот же тип что используют процессоры внутри.
 
+Интересно, как инспектор работает со стабильными ссылками под капотом? Загляни в пакет [StableRef](https://github.com/SST-Systems/StableRef).
+
 ---
 
 ## Лайфтайм
@@ -863,13 +911,13 @@ public class MaxCount : Extension<int> { ... }
 
 ```csharp
 // Авто-диспоз при уничтожении объекта — IDisposable хранить не нужно
-_manager.ResolveInstructions(processor, lifetimeOwner: this);
+_manager.ResolveInstructions(instructionProcessor, lifetimeOwner: this);
 
 // Ручной контроль — null явно, IDisposable держишь и диспозишь сам
-_binding = _manager.ResolveInstructions(processor, lifetimeOwner: null);
+_binding = _manager.ResolveInstructions(instructionProcessor, lifetimeOwner: null);
 
 // Комбинированный — авто-диспоз при уничтожении И досрочный ручной диспоз при необходимости
-_binding = _manager.ResolveInstructions(processor, lifetimeOwner: this);
+_binding = _manager.ResolveInstructions(instructionProcessor, lifetimeOwner: this);
 // ...
 _binding.Dispose(); // безопасно вызвать досрочно; no-op если уже задиспожен через lifetimeOwner
 ```

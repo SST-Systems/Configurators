@@ -6,13 +6,15 @@ using SST.Pooling;
 namespace SST.Configurators
 {
     /// <summary>
-    /// Default <see cref="IConditionManager"/>. Pools <see cref="IConditionHandler"/> instances and binds them to
-    /// the serialized data of a <see cref="ConditionProcessor"/>, walking composites recursively and guarding
-    /// against cyclic references.
+    /// Default <see cref="IConditionManager"/>. Pools <see cref="IConditionHandler"/> and
+    /// <see cref="IContextConditionHandler"/> instances and binds them to the serialized data of a
+    /// <see cref="ConditionProcessor"/> or a context-aware <see cref="ConditionProcessor{TContext}"/>, walking
+    /// composites recursively and guarding against cyclic references.
     /// </summary>
     public class ConditionManager : ConfiguratorManagerBase, IConditionManager
     {
         private readonly MultiPool<Type, IConditionHandler> _handlerPool = new();
+        private readonly MultiPool<Type, IContextConditionHandler> _contextHandlerPool = new();
 
         /// <summary>Initializes the manager with the factory used to create handlers.</summary>
         /// <param name="factory">Handler factory; when <c>null</c>, an <see cref="ActivatorHandlerFactory"/> is used.</param>
@@ -109,6 +111,102 @@ namespace SST.Configurators
                 lifecycle.OnRelease();
 
             if (condition is ICompositeCondition composite)
+                foreach (var inner in composite.GetConditions())
+                    ReleaseConditionRecursive(inner, visited);
+        }
+
+        /// <inheritdoc/>
+        public IDisposable ResolveConditions<TContext>(ConditionProcessor<TContext> processor, Component lifetimeOwner)
+            => Bind(processor, lifetimeOwner, nameof(ResolveConditions), disposable =>
+            {
+                var visited = UnityEngine.Pool.HashSetPool<ICondition<TContext>>.Get();
+                var currentPath = UnityEngine.Pool.HashSetPool<ICondition<TContext>>.Get();
+
+                try
+                {
+                    var conditions = processor.Conditions;
+                    if (conditions != null)
+                        foreach (var stableRef in conditions)
+                            BindConditionRecursive(stableRef?.Value, visited, currentPath);
+                }
+                finally
+                {
+                    UnityEngine.Pool.HashSetPool<ICondition<TContext>>.Release(currentPath);
+                    UnityEngine.Pool.HashSetPool<ICondition<TContext>>.Release(visited);
+                }
+
+                disposable.Register(() => Unregister(processor));
+                disposable.Register(processor.UnsubscribeAll);
+            });
+
+        private void Unregister<TContext>(ConditionProcessor<TContext> processor)
+        {
+            ActiveBindings.Remove(processor);
+
+            var conditions = processor.Conditions;
+
+            if (conditions == null)
+                return;
+
+            var visited = UnityEngine.Pool.HashSetPool<ICondition<TContext>>.Get();
+
+            try
+            {
+                foreach (var stableRef in conditions)
+                    ReleaseConditionRecursive(stableRef?.Value, visited);
+            }
+            finally
+            {
+                UnityEngine.Pool.HashSetPool<ICondition<TContext>>.Release(visited);
+            }
+        }
+
+        private void BindConditionRecursive<TContext>(ICondition<TContext> condition,
+            HashSet<ICondition<TContext>> visited, HashSet<ICondition<TContext>> currentPath)
+        {
+            if (condition == null)
+                return;
+
+            if (currentPath.Contains(condition))
+            {
+                Debug.LogError($"[ConditionManager] Cycle detected while resolving conditions: " +
+                               $"{condition.GetType().Name} forms a circular reference.");
+                return;
+            }
+
+            if (!visited.Add(condition))
+                return;
+
+            if (condition is IHandlerBinder binder)
+                BindHandler(_contextHandlerPool, binder);
+
+            if (condition is IBindingLifecycle lifecycle)
+                lifecycle.OnResolve();
+
+            if (condition is ICompositeCondition<TContext> composite)
+            {
+                currentPath.Add(condition);
+                foreach (var inner in composite.GetConditions())
+                    BindConditionRecursive(inner, visited, currentPath);
+                currentPath.Remove(condition);
+            }
+        }
+
+        private void ReleaseConditionRecursive<TContext>(ICondition<TContext> condition, HashSet<ICondition<TContext>> visited)
+        {
+            if (condition == null)
+                return;
+
+            if (!visited.Add(condition))
+                return;
+
+            if (condition is IHandlerBinder binder)
+                ReleaseHandler(_contextHandlerPool, binder);
+
+            if (condition is IBindingLifecycle lifecycle)
+                lifecycle.OnRelease();
+
+            if (condition is ICompositeCondition<TContext> composite)
                 foreach (var inner in composite.GetConditions())
                     ReleaseConditionRecursive(inner, visited);
         }

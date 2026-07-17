@@ -1,4 +1,4 @@
-# Zenject For Configurators
+# Zenject for Configurators
 
 [English](README.md) | **Русский**
 

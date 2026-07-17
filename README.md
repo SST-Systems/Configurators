@@ -136,15 +136,15 @@ public class SetMaxHealth : Modification<Unit>
 ```csharp
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private ModificationProcessor<Unit> modifications;
+    [SerializeField] private ModificationProcessor<Unit> modificationProcessor;
 
     // Manager — create manually or get it from DI
     private readonly IModificationManager _manager = new ModificationManager();
 
-    private void Awake() => _manager.ResolveModifications(modifications, lifetimeOwner: this);
+    private void Awake() => _manager.ResolveModifications(modificationProcessor, lifetimeOwner: this);
 
     // Configure a freshly spawned unit — applies the list top to bottom
-    public async Task Configure(Unit unit) => await modifications.Apply(unit);
+    public async Task Configure(Unit unit) => await modificationProcessor.Apply(unit);
 }
 ```
 
@@ -163,7 +163,7 @@ Runnable examples, one per module — import via `Window → Package Manager →
 | [Conditions for Visibility](Samples~/Conditions%20for%20Visibility/README.md) | Conditions | UI toggles drive a two-state panel through a controller — condition combinations pick the state, its instructions restyle it (Conditions + Instructions combined). |
 | [Extensions for Config](Samples~/Extensions%20for%20Config/README.md) | Extensions | A config carries optional extensions; the view renders only those present. |
 
-Plus [Zenject For Configurators](Samples~/Zenject%20For%20Configurators) — a ready `IHandlerFactory` and installer.
+Plus [Zenject for Configurators](Samples~/Zenject%20for%20Configurators) — a ready `IHandlerFactory` and installer.
 
 ---
 
@@ -171,10 +171,10 @@ Plus [Zenject For Configurators](Samples~/Zenject%20For%20Configurators) — a r
 
 | Term | Meaning |
 |---|---|
-| **Modification** | A unit of work applied to a `TContext`, run sequentially. Example: "set max HP", "add tag". |
+| **Modification** | A unit of work applied to a `TContext`, run sequentially. Example: `SetMaxHealth`, `AddTag`. |
 | **Instruction** | A command with no context — targets are inspector references on the data class, run sequentially. Example: `GameObjectSetActive`, `PlaySound`, `WaitForSeconds`. |
-| **Condition** | A boolean predicate with change subscription (`AddListener`) and direct query (`IsMet`). |
-| **Extension** | A value carrier attached to a config or component, read on demand. Example: cooldown, max count, an icon. |
+| **Condition** | A boolean predicate with change subscription (`AddListener`) and direct query (`IsMet`). Example: `HealthBelow`, `IsNight`. |
+| **Extension** | A value carrier attached to a config or component, read on demand. Example: `Cooldown`, `MaxCount`, `IconById`. |
 | **Processor** | Container holding a list of elements for one module. Lives on a config or component. |
 | **Handler** | Pooled runtime logic for a data object. Required when you need injectable dependencies. |
 | **HandlerFactory** | Controls how handler instances are created. Default is `Activator.CreateInstance`. |
@@ -204,7 +204,7 @@ Handlers are pooled runtime objects — they're created once, reused, and return
 
 Managers delegate handler instantiation to `IHandlerFactory`. **By default — `ActivatorHandlerFactory`** — creates them via `Activator.CreateInstance`. Works when handlers have no dependencies (or resolve them manually via a service locator). That's enough to get started.
 
-If your handlers need DI, plug in your own factory so the container does the construction. A ready-made Zenject integration (factory + installer with bindings) ships in the [Zenject For Configurators](Samples~/Zenject%20For%20Configurators) sample.
+If your handlers need DI, plug in your own factory so the container does the construction. A ready-made Zenject integration (factory + installer with bindings) ships in the [Zenject for Configurators](Samples~/Zenject%20for%20Configurators) sample.
 
 <details>
 <summary><b>Your own factory for DI</b></summary>
@@ -229,7 +229,7 @@ public class ZenjectHandlerFactory : IHandlerFactory
 }
 ```
 
-With this in place, any handler can declare its own `[Inject]` fields and receive dependencies like any other class — the factory takes care of the rest. For how to bind the factory and managers, see the installer in the [Zenject For Configurators](Samples~/Zenject%20For%20Configurators) sample.
+With this in place, any handler can declare its own `[Inject]` fields and receive dependencies like any other class — the factory takes care of the rest. For how to bind the factory and managers, see the installer in the [Zenject for Configurators](Samples~/Zenject%20for%20Configurators) sample.
 
 </details>
 
@@ -246,10 +246,10 @@ Once declared, a processor must be resolved through its manager before use — t
 IModificationManager manager = new ModificationManager();
 
 // 2. Resolve before use — binds handlers
-manager.ResolveModifications(processor, lifetimeOwner: this);
+manager.ResolveModifications(modificationProcessor, lifetimeOwner: this);
 
 // 3. Run after resolve — Apply returns a Task; await it if you need to wait for async steps
-await processor.Apply(context);
+await modificationProcessor.Apply(context);
 ```
 
 > **About the examples.** Code samples below don't use any DI container. `ServiceLocator.Get<T>()` is a stand-in — how you actually obtain your managers (manual instantiation, Zenject, VContainer, or any other approach) is entirely up to you. `Unit`, `PlayerHealth`, `IGameFactory`, `ISkinService` and similar types are project-specific placeholders; substitute them with your own.
@@ -349,7 +349,7 @@ public class ApplySkinHandler : AsyncModificationHandler<ApplySkin, Unit>
 ```csharp
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private ModificationProcessor<Unit> modifications;
+    [SerializeField] private ModificationProcessor<Unit> modificationProcessor;
 
     private readonly IModificationManager _modificationManager = ServiceLocator.Get<IModificationManager>();
     // With Zenject: [Inject] private readonly IModificationManager _modificationManager;
@@ -357,13 +357,13 @@ public class EnemySpawner : MonoBehaviour
     private void Awake()
     {
         // Resolve once — handlers are bound, chain cancelled when this is destroyed
-        _modificationManager.ResolveModifications(modifications, lifetimeOwner: this);
+        _modificationManager.ResolveModifications(modificationProcessor, lifetimeOwner: this);
     }
 
     // Configure a freshly spawned unit — awaits every modification in order
     public async Task Configure(Unit unit)
     {
-        try { await modifications.Apply(unit); }
+        try { await modificationProcessor.Apply(unit); }
         catch (OperationCanceledException) { /* unit or spawner destroyed mid-configure */ }
     }
 }
@@ -376,16 +376,16 @@ public class EnemySpawner : MonoBehaviour
 
 > **Cancellation.** Disposing the binding or destroying the `lifetimeOwner` cancels in-flight async runs. You can also pass your own token to `Apply`. Forward the token into every `await` inside your async modifications (and call `cancellationToken.ThrowIfCancellationRequested()` in loops), otherwise the current step runs to completion before it stops.
 
-> **Concurrency.** The processor keeps no per-run state, so one processor can be applied to many objects at once — e.g. `await Task.WhenAll(units.Select(u => modifications.Apply(u)))`. Each context's chain runs independently (and in order within itself). Safe as long as handlers keep no per-call state in fields — the context flows as a parameter, not stored.
+> **Concurrency.** The processor keeps no per-run state, so one processor can be applied to many objects at once — e.g. `await Task.WhenAll(units.Select(u => modificationProcessor.Apply(u)))`. Each context's chain runs independently (and in order within itself). Safe as long as handlers keep no per-call state in fields — the context flows as a parameter, not stored.
 
 Manual control (`lifetimeOwner: null`):
 
 ```csharp
 private IDisposable _binding;
 
-private void Setup(ModificationProcessor<SomeContext> processor)
+private void Setup(ModificationProcessor<SomeContext> modificationProcessor)
 {
-    _binding = _modificationManager.ResolveModifications(processor, lifetimeOwner: null);
+    _binding = _modificationManager.ResolveModifications(modificationProcessor, lifetimeOwner: null);
 }
 
 private void Cleanup()
@@ -397,7 +397,7 @@ private void Cleanup()
 **Re-resolving** — calling `ResolveModifications` on an already-resolved processor automatically disposes the previous binding and creates a new one. Use this to transfer control to a new `lifetimeOwner`:
 
 ```csharp
-_modificationManager.ResolveModifications(processor, lifetimeOwner: newOwner);
+_modificationManager.ResolveModifications(modificationProcessor, lifetimeOwner: newOwner);
 ```
 
 </details>
@@ -521,7 +521,7 @@ public class PlaySoundHandler : AsyncInstructionHandler<PlaySound>
 ```csharp
 public class TutorialController : MonoBehaviour
 {
-    [SerializeField] private InstructionProcessor steps;
+    [SerializeField] private InstructionProcessor instructionProcessor;
 
     private readonly IInstructionManager _instructionManager = ServiceLocator.Get<IInstructionManager>();
     // With Zenject: [Inject] private readonly IInstructionManager _instructionManager;
@@ -529,23 +529,23 @@ public class TutorialController : MonoBehaviour
     private void Awake()
     {
         // Resolve once — handlers are bound, chain cancelled when this is destroyed
-        _instructionManager.ResolveInstructions(steps, lifetimeOwner: this);
+        _instructionManager.ResolveInstructions(instructionProcessor, lifetimeOwner: this);
     }
 
     // Start the chain — repeated calls automatically cancel the previous run
     public void StartTutorial()
     {
-        steps.Apply();
+        instructionProcessor.Apply();
     }
 
     // Start and await completion of the entire chain
     public async Task StartAndAwait()
     {
-        steps.Apply();
+        instructionProcessor.Apply();
 
         try
         {
-            await steps.ExecutionTask;
+            await instructionProcessor.ExecutionTask;
             Debug.Log("All instructions completed");
         }
         catch (OperationCanceledException)
@@ -555,7 +555,7 @@ public class TutorialController : MonoBehaviour
     }
 
     // Early cancellation without restart
-    public void StopTutorial() => steps.Cancel();
+    public void StopTutorial() => instructionProcessor.Cancel();
 }
 ```
 
@@ -566,14 +566,14 @@ public class TutorialController : MonoBehaviour
 
 > **Cancellation.** When the binding is disposed or `lifetimeOwner` is destroyed, the running chain is cancelled; a repeat `Apply` cancels the previous run. In your async instructions, forward the token into every `await` (`Task.Delay(ms, cancellationToken)`, `UniTask.Delay(...)`, etc.) and call `cancellationToken.ThrowIfCancellationRequested()` in loops — otherwise the current step runs to completion before it stops.
 
-**`processor.ExecutionTask`** — the Task for the current run. Await it to observe when the entire chain finishes. Completes with `OperationCanceledException` on cancellation.
+**`instructionProcessor.ExecutionTask`** — the Task for the current run. Await it to observe when the entire chain finishes. Completes with `OperationCanceledException` on cancellation.
 
-**`processor.Cancel()`** — cancels the currently running chain without restarting it.
+**`instructionProcessor.Cancel()`** — cancels the currently running chain without restarting it.
 
 **Re-resolving** — calling `ResolveInstructions` on an already-resolved processor disposes the previous binding and transfers control to a new `lifetimeOwner`:
 
 ```csharp
-_instructionManager.ResolveInstructions(processor, lifetimeOwner: newOwner);
+_instructionManager.ResolveInstructions(instructionProcessor, lifetimeOwner: newOwner);
 ```
 
 </details>
@@ -646,7 +646,7 @@ public class HealthBelowHandler : ConditionHandler<HealthBelow>
 ```csharp
 public class UIHealthWarning : MonoBehaviour
 {
-    [SerializeField] private ConditionProcessor conditions;
+    [SerializeField] private ConditionProcessor conditionProcessor;
 
     private readonly IConditionManager _conditionManager = ServiceLocator.Get<IConditionManager>();
     // With Zenject: [Inject] private readonly IConditionManager _conditionManager;
@@ -654,10 +654,10 @@ public class UIHealthWarning : MonoBehaviour
     private void Awake()
     {
         // Resolve once — handlers bound, auto-disposed when this is destroyed
-        _conditionManager.ResolveConditions(conditions, lifetimeOwner: this);
+        _conditionManager.ResolveConditions(conditionProcessor, lifetimeOwner: this);
 
         // Subscribe directly on the processor
-        conditions.Subscribe(isMet => gameObject.SetActive(isMet));
+        conditionProcessor.Subscribe(isMet => gameObject.SetActive(isMet));
     }
 }
 ```
@@ -668,24 +668,24 @@ public class UIHealthWarning : MonoBehaviour
 Direct poll without subscription:
 
 ```csharp
-if (_conditions.IsMet())
+if (conditionProcessor.IsMet())
 {
     // perform action
 }
 ```
 
-**`processor.Subscribe(Action<bool> onChanged)`** — registers a callback that fires immediately with the current `IsMet()` result, then again every time any condition changes. Multiple subscribers are supported.
+**`conditionProcessor.Subscribe(Action<bool> onChanged)`** — registers a callback that fires immediately with the current `IsMet()` result, then again every time any condition changes. Multiple subscribers are supported.
 
-**`processor.Unsubscribe(Action<bool> onChanged)`** — removes a specific callback. Condition listeners are released automatically when the last subscriber unsubscribes.
+**`conditionProcessor.Unsubscribe(Action<bool> onChanged)`** — removes a specific callback. Condition listeners are released automatically when the last subscriber unsubscribes.
 
-**`processor.UnsubscribeAll()`** — removes all subscribers and listeners at once. Used internally by the manager on binding dispose.
+**`conditionProcessor.UnsubscribeAll()`** — removes all subscribers and listeners at once. Used internally by the manager on binding dispose.
 
-**`processor.IsMet()`** — directly evaluates all conditions. Returns `true` if the list is empty. Every condition must be met (equivalent to `All`).
+**`conditionProcessor.IsMet()`** — directly evaluates all conditions. Returns `true` if the list is empty. Every condition must be met (equivalent to `All`).
 
-**Re-resolving** — calling `ResolveConditions` on an already-resolved processor disposes the previous binding (which unbinds handlers and calls `processor.UnsubscribeAll()`) and transfers control to a new `lifetimeOwner`:
+**Re-resolving** — calling `ResolveConditions` on an already-resolved processor disposes the previous binding (which unbinds handlers and calls `conditionProcessor.UnsubscribeAll()`) and transfers control to a new `lifetimeOwner`:
 
 ```csharp
-_conditionManager.ResolveConditions(processor, lifetimeOwner: newOwner);
+_conditionManager.ResolveConditions(conditionProcessor, lifetimeOwner: newOwner);
 ```
 
 **Composite conditions** — `All`, `Any`, `None`, `Not` combine conditions and nest freely:
@@ -699,6 +699,52 @@ All
 ```
 
 Added in the Inspector like regular conditions. Listeners fire once per inner change, regardless of how many external listeners are attached.
+
+</details>
+
+<details>
+<summary><b>Context-aware conditions — <code>Condition&lt;TContext&gt;</code></b></summary>
+
+Every condition type has a context-aware sibling living in the same file, distinguished only by a generic parameter — the same pattern as the Modifications module. Reach for it when a predicate needs an object to evaluate against (a `Unit`, a `Shape`, a widget) instead of pulling everything from services: the context flows into `IsMet(TContext context)`, exactly like `Modification.Apply(TContext context)`.
+
+| Context-free | Context-aware |
+| --- | --- |
+| `ICondition` / `Condition` | `ICondition<TContext>` / `Condition<TContext>` |
+| `ConditionData<THandler>` | `ConditionData<TContext, THandler>` |
+| `IConditionHandler` / `ConditionHandler<TData>` | `IConditionHandler<TContext>` / `ConditionHandler<TData, TContext>` |
+| `All` / `Any` / `None` / `Not` | `All<TContext>` / `Any<TContext>` / `None<TContext>` / `Not<TContext>` |
+| `ConditionProcessor` | `ConditionProcessor<TContext>` |
+
+```csharp
+// Inline, context-aware
+[Serializable]
+[StableRefCategory("Health")]
+public class HealthBelow : Condition<Unit>
+{
+    [Range(0, 1)] public float Threshold;
+    public override bool IsMet(Unit unit) => unit.Health.Ratio < Threshold;
+}
+```
+
+Drop a `ConditionProcessor<Unit>` on a component and assemble `All<Unit>` / `Any<Unit>` / `Not<Unit>` in the Inspector — a composite forwards the same context to every child, so a tree stays typed to a single `TContext` (you can't mix conditions of different contexts).
+
+```csharp
+[SerializeField] private ConditionProcessor<Unit> conditionProcessor;
+
+private void Setup(Unit unit)
+{
+    // Resolve handler-based entries — overload of the same manager
+    _conditionManager.ResolveConditions(conditionProcessor, lifetimeOwner: this);
+
+    // Reactive: each subscriber supplies its own context
+    conditionProcessor.Subscribe(unit, met => retreatButton.SetActive(met));
+
+    // Or poll directly
+    if (conditionProcessor.IsMet(unit)) { /* ... */ }
+}
+```
+
+The change signal itself stays context-free (`AddListener` / `NotifyChanged` are unchanged) — on every change each subscriber is re-evaluated with its own context, so one processor can drive several contexts at once. Handler-based context conditions behave exactly like the context-free ones (`OnFirstListenerAdded` / `OnLastListenerRemoved` + `NotifyChanged`), with `IsMet(TContext)` receiving the context.
 
 </details>
 
@@ -799,9 +845,9 @@ public class SpriteByIdHandler : AsyncExtensionHandler<SpriteById, Sprite>
 **Running it with a handler** — resolve once, then await the value on demand. Your own token is linked with the resolve-scoped one:
 
 ```csharp
-_extensionManager.ResolveExtensions(extensions, lifetimeOwner: this);
+_extensionManager.ResolveExtensions(extensionProcessor, lifetimeOwner: this);
 
-if (extensions.TryGetExtension(out SpriteById icon))
+if (extensionProcessor.TryGetExtension(out SpriteById icon))
     image.sprite = await icon.GetValueAsync(cancellationToken);
 ```
 
@@ -853,6 +899,8 @@ public class MaxCount : Extension<int> { ... }
 
 If you need a polymorphic list outside the built-in processors, use `StableRefList<T>` directly — that's the same type the processors use internally.
 
+Want to see how the Inspector's typed dropdown and rename-proof references work under the hood? Check out the [StableRef](https://github.com/SST-Systems/StableRef) package.
+
 ---
 
 ## Lifetime
@@ -863,13 +911,13 @@ The `lifetimeOwner` parameter is required. Pass an owner object and the manager 
 
 ```csharp
 // Auto-dispose when this is destroyed — no need to store IDisposable
-_manager.ResolveInstructions(processor, lifetimeOwner: this);
+_manager.ResolveInstructions(instructionProcessor, lifetimeOwner: this);
 
 // Manual control — pass null explicitly, store and dispose IDisposable yourself
-_binding = _manager.ResolveInstructions(processor, lifetimeOwner: null);
+_binding = _manager.ResolveInstructions(instructionProcessor, lifetimeOwner: null);
 
 // Combined — auto-dispose on destroy AND early manual dispose when needed
-_binding = _manager.ResolveInstructions(processor, lifetimeOwner: this);
+_binding = _manager.ResolveInstructions(instructionProcessor, lifetimeOwner: this);
 // ...
 _binding.Dispose(); // safe to call early; no-op if already disposed by lifetimeOwner
 ```

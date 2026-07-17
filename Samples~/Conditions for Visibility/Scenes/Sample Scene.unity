@@ -537,7 +537,7 @@ MonoBehaviour:
     When:
       Conditions:
         _items:
-        - TypeId: fd778e5ced5c4c24b3e09f5b92ff9f4d
+        - TypeId: SST.Configurators.All
           TypeDisplayName: All
           ObjectRefs: []
           ObjectRefPaths: []
