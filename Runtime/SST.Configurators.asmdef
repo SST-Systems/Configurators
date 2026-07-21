@@ -1,9 +1,9 @@
 {
-    "name": "Configurators.Samples.ModificationsForObject",
-    "rootNamespace": "SST.Configurators.Samples.ModificationsForObject",
+    "name": "SST.Configurators",
+    "rootNamespace": "SST.Configurators",
     "references": [
-        "Configurators",
-        "StableRef"
+        "SST.Pooling",
+        "SST.StableRef"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

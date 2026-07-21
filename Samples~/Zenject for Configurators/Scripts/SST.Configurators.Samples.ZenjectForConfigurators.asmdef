@@ -1,9 +1,10 @@
 {
-    "name": "Configurators.Samples.ConditionsForVisibility",
-    "rootNamespace": "SST.Configurators.Samples.ConditionsForVisibility",
+    "name": "SST.Configurators.Samples.ZenjectForConfigurators",
+    "rootNamespace": "SST.Configurators.Samples.ZenjectForConfigurators",
     "references": [
         "Configurators",
-        "StableRef"
+        "Zenject",
+        "SST.Configurators"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -214,7 +214,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1040202674}
-  - {fileID: 1797260905}
+  - {fileID: 1352986169}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -578,56 +578,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &1385921316 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2980172576403536008, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-  m_PrefabInstance: {fileID: 3776983241857553205}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!224 &1797260905 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5351642374369158244, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-  m_PrefabInstance: {fileID: 3776983241857553205}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1797260911 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-  m_PrefabInstance: {fileID: 3776983241857553205}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fd84aabc6c228d41a0f9f58debd5a4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1797260912 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-  m_PrefabInstance: {fileID: 3776983241857553205}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 350325e6940c5c949a5792546d9627ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1797260914 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2392250155675363655, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-  m_PrefabInstance: {fileID: 3776983241857553205}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1001 &3776983241857553205
+--- !u!1001 &1352986168
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -636,31 +587,31 @@ PrefabInstance:
     m_TransformParent: {fileID: 502579211}
     m_Modifications:
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164242]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.ShakeRectTransform
+      propertyPath: 'managedReferences[5218601525121908747]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.ShakeRectTransform
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164243]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.ChangeTextColor
+      propertyPath: 'managedReferences[5218601525121908748]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.ChangeTextColor
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164243].Text
+      propertyPath: managedReferences[5218601525121908748].Text
       value: 
-      objectReference: {fileID: 1385921316}
+      objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164243].Color.a
+      propertyPath: managedReferences[5218601525121908748].Color.a
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164243].Color.b
+      propertyPath: managedReferences[5218601525121908748].Color.b
       value: 0.4669811
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164243].Color.g
+      propertyPath: managedReferences[5218601525121908748].Color.g
       value: 0.4669811
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164243].Color.r
+      propertyPath: managedReferences[5218601525121908748].Color.r
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
@@ -668,23 +619,23 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164242].RectTransform
+      propertyPath: managedReferences[5218601525121908747].RectTransform
       value: 
-      objectReference: {fileID: 1797260905}
+      objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164242].WaitForCompletion
+      propertyPath: managedReferences[5218601525121908747].WaitForCompletion
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].Value
-      value: 5218601172963164242
+      value: 5218601525121908747
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[1].Value
-      value: 5218601172963164243
+      value: 5218601525121908748
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164242].AnimSettings.Duration
+      propertyPath: managedReferences[5218601525121908747].AnimSettings.Duration
       value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
@@ -696,11 +647,11 @@ PrefabInstance:
       value: 6464174790d1ee845bb5950447015e80
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164242].AnimSettings.Frequency
+      propertyPath: managedReferences[5218601525121908747].AnimSettings.Frequency
       value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164242].AnimSettings.Magnitude
+      propertyPath: managedReferences[5218601525121908747].AnimSettings.Magnitude
       value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
@@ -730,11 +681,11 @@ PrefabInstance:
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: 'instructionProcessor.Instructions._items.Array.data[0].ObjectRefs.Array.data[0]'
       value: 
-      objectReference: {fileID: 1797260905}
+      objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: 'instructionProcessor.Instructions._items.Array.data[1].ObjectRefs.Array.data[0]'
       value: 
-      objectReference: {fileID: 1385921316}
+      objectReference: {fileID: 0}
     - target: {fileID: 1481602920599316807, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].ObjectRefPaths.Array.size
       value: 1
@@ -752,20 +703,20 @@ PrefabInstance:
       value: Text
       objectReference: {fileID: 0}
     - target: {fileID: 1533685922930869260, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164246]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.DeselectSelectable
+      propertyPath: 'managedReferences[5218601525121908746]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.DeselectSelectable
       objectReference: {fileID: 0}
     - target: {fileID: 1533685922930869260, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164246].selectable
+      propertyPath: managedReferences[5218601525121908746].selectable
       value: 
-      objectReference: {fileID: 1797260914}
+      objectReference: {fileID: 0}
     - target: {fileID: 1533685922930869260, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1533685922930869260, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].Value
-      value: 5218601172963164246
+      value: 5218601525121908746
       objectReference: {fileID: 0}
     - target: {fileID: 1533685922930869260, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].TypeId
@@ -782,7 +733,7 @@ PrefabInstance:
     - target: {fileID: 1533685922930869260, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: 'instructionProcessor.Instructions._items.Array.data[0].ObjectRefs.Array.data[0]'
       value: 
-      objectReference: {fileID: 1797260914}
+      objectReference: {fileID: 0}
     - target: {fileID: 1533685922930869260, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].ObjectRefPaths.Array.size
       value: 1
@@ -792,11 +743,19 @@ PrefabInstance:
       value: selectable
       objectReference: {fileID: 0}
     - target: {fileID: 1676502112186329532, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164260]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.LogMessage
+      propertyPath: 'managedReferences[5218601525075247178]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.LogMessage
       objectReference: {fileID: 0}
     - target: {fileID: 1676502112186329532, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164260].message
+      propertyPath: 'managedReferences[5218601525121908740]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.LogMessage
+      objectReference: {fileID: 0}
+    - target: {fileID: 1676502112186329532, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
+      propertyPath: managedReferences[5218601525075247178].message
+      value: Button on click!
+      objectReference: {fileID: 0}
+    - target: {fileID: 1676502112186329532, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
+      propertyPath: managedReferences[5218601525121908740].message
       value: Button on click!
       objectReference: {fileID: 0}
     - target: {fileID: 1676502112186329532, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
@@ -805,7 +764,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1676502112186329532, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].Value
-      value: 5218601172963164260
+      value: 5218601525121908740
       objectReference: {fileID: 0}
     - target: {fileID: 1676502112186329532, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].TypeId
@@ -820,20 +779,20 @@ PrefabInstance:
       value: LogMessage
       objectReference: {fileID: 0}
     - target: {fileID: 4803630548086577829, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164247]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.SelectSelectable
+      propertyPath: 'managedReferences[5218601525121908745]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.SelectSelectable
       objectReference: {fileID: 0}
     - target: {fileID: 4803630548086577829, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164247].selectable
+      propertyPath: managedReferences[5218601525121908745].selectable
       value: 
-      objectReference: {fileID: 1797260914}
+      objectReference: {fileID: 0}
     - target: {fileID: 4803630548086577829, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4803630548086577829, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].Value
-      value: 5218601172963164247
+      value: 5218601525121908745
       objectReference: {fileID: 0}
     - target: {fileID: 4803630548086577829, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].TypeId
@@ -850,7 +809,7 @@ PrefabInstance:
     - target: {fileID: 4803630548086577829, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: 'instructionProcessor.Instructions._items.Array.data[0].ObjectRefs.Array.data[0]'
       value: 
-      objectReference: {fileID: 1797260914}
+      objectReference: {fileID: 0}
     - target: {fileID: 4803630548086577829, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].ObjectRefPaths.Array.size
       value: 1
@@ -940,43 +899,43 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164254]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.CancelInstructionForButton
+      propertyPath: 'managedReferences[5218601525121908743]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.CancelInstructionForButton
       objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164259]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.SetScaleRectTransform
+      propertyPath: 'managedReferences[5218601525121908744]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.SetScaleRectTransform
       objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164254].target
+      propertyPath: managedReferences[5218601525121908743].target
       value: 
-      objectReference: {fileID: 1797260912}
+      objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164259].RectTransform
+      propertyPath: managedReferences[5218601525121908744].RectTransform
       value: 
-      objectReference: {fileID: 1797260905}
+      objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164259].WaitForCompletion
+      propertyPath: managedReferences[5218601525121908744].WaitForCompletion
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164259].AnimSettings.Scale
+      propertyPath: managedReferences[5218601525121908744].AnimSettings.Scale
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].Value
-      value: 5218601172963164254
+      value: 5218601525121908743
       objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[1].Value
-      value: 5218601172963164259
+      value: 5218601525121908744
       objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164259].AnimSettings.Duration
+      propertyPath: managedReferences[5218601525121908744].AnimSettings.Duration
       value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
@@ -1010,11 +969,11 @@ PrefabInstance:
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: 'instructionProcessor.Instructions._items.Array.data[0].ObjectRefs.Array.data[0]'
       value: 
-      objectReference: {fileID: 1797260912}
+      objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: 'instructionProcessor.Instructions._items.Array.data[1].ObjectRefs.Array.data[0]'
       value: 
-      objectReference: {fileID: 1797260905}
+      objectReference: {fileID: 0}
     - target: {fileID: 7003903346626562671, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].ObjectRefPaths.Array.size
       value: 1
@@ -1032,43 +991,43 @@ PrefabInstance:
       value: RectTransform
       objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164253]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.CancelInstructionForButton
+      propertyPath: 'managedReferences[5218601525121908741]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.CancelInstructionForButton
       objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164258]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.SetScaleRectTransform
+      propertyPath: 'managedReferences[5218601525121908742]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.SetScaleRectTransform
       objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164253].target
+      propertyPath: managedReferences[5218601525121908741].target
       value: 
-      objectReference: {fileID: 1797260911}
+      objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164258].RectTransform
+      propertyPath: managedReferences[5218601525121908742].RectTransform
       value: 
-      objectReference: {fileID: 1797260905}
+      objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164258].WaitForCompletion
+      propertyPath: managedReferences[5218601525121908742].WaitForCompletion
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164258].AnimSettings.Scale
-      value: 1.2
+      propertyPath: managedReferences[5218601525121908742].AnimSettings.Scale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].Value
-      value: 5218601172963164253
+      value: 5218601525121908741
       objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[1].Value
-      value: 5218601172963164258
+      value: 5218601525121908742
       objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164258].AnimSettings.Duration
+      propertyPath: managedReferences[5218601525121908742].AnimSettings.Duration
       value: 0.12
       objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
@@ -1102,11 +1061,11 @@ PrefabInstance:
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: 'instructionProcessor.Instructions._items.Array.data[0].ObjectRefs.Array.data[0]'
       value: 
-      objectReference: {fileID: 1797260911}
+      objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: 'instructionProcessor.Instructions._items.Array.data[1].ObjectRefs.Array.data[0]'
       value: 
-      objectReference: {fileID: 1797260905}
+      objectReference: {fileID: 0}
     - target: {fileID: 7556007631703176613, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].ObjectRefPaths.Array.size
       value: 1
@@ -1128,27 +1087,27 @@ PrefabInstance:
       value: Button
       objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: 'managedReferences[5218601172963164245]'
-      value: Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.ChangeTextColor
+      propertyPath: 'managedReferences[5218601525121908749]'
+      value: SST.Configurators.Samples.InstructionsForButton SST.Configurators.Samples.InstructionsForButton.ChangeTextColor
       objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164245].Text
+      propertyPath: managedReferences[5218601525121908749].Text
       value: 
-      objectReference: {fileID: 1385921316}
+      objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164245].Color.a
+      propertyPath: managedReferences[5218601525121908749].Color.a
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164245].Color.b
+      propertyPath: managedReferences[5218601525121908749].Color.b
       value: 0.19607843
       objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164245].Color.g
+      propertyPath: managedReferences[5218601525121908749].Color.g
       value: 0.19607843
       objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
-      propertyPath: managedReferences[5218601172963164245].Color.r
+      propertyPath: managedReferences[5218601525121908749].Color.r
       value: 0.19607843
       objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
@@ -1157,7 +1116,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].Value
-      value: 5218601172963164245
+      value: 5218601525121908749
       objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].TypeId
@@ -1178,7 +1137,7 @@ PrefabInstance:
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: 'instructionProcessor.Instructions._items.Array.data[0].ObjectRefs.Array.data[0]'
       value: 
-      objectReference: {fileID: 1385921316}
+      objectReference: {fileID: 0}
     - target: {fileID: 8386040675042977460, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
       propertyPath: instructionProcessor.Instructions._items.Array.data[0].ObjectRefPaths.Array.size
       value: 1
@@ -1192,6 +1151,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
+--- !u!224 &1352986169 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5351642374369158244, guid: 731372d92e0e21441868b04a3a58fb10, type: 3}
+  m_PrefabInstance: {fileID: 1352986168}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

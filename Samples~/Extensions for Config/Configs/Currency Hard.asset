@@ -23,14 +23,14 @@ MonoBehaviour:
         ObjectRefPaths: []
         ValuesData: value=Hard
         Value:
-          rid: 5218601323263164505
+          rid: 5218601525075247165
       - TypeId: 4d443d2849b92ea4eac147e1bcea6f22
         TypeDisplayName: TintColor
         ObjectRefs: []
         ObjectRefPaths: []
         ValuesData: value=1|1|0|1
         Value:
-          rid: 5218601323263164507
+          rid: 5218601525075247166
       - TypeId: 795437bc68201dc4ea1fa02f74e21099
         TypeDisplayName: Icon
         ObjectRefs:
@@ -39,19 +39,19 @@ MonoBehaviour:
         - value
         ValuesData: 
         Value:
-          rid: 5218601323263164508
+          rid: 5218601525075247167
   references:
     version: 2
     RefIds:
-    - rid: 5218601323263164505
-      type: {class: DisplayName, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: Configurators.Samples.ExtensionsForConfig}
+    - rid: 5218601525075247165
+      type: {class: DisplayName, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: SST.Configurators.Samples.ExtensionsForConfig}
       data:
         value: Hard
-    - rid: 5218601323263164507
-      type: {class: TintColor, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: Configurators.Samples.ExtensionsForConfig}
+    - rid: 5218601525075247166
+      type: {class: TintColor, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: SST.Configurators.Samples.ExtensionsForConfig}
       data:
         value: {r: 1, g: 1, b: 0, a: 1}
-    - rid: 5218601323263164508
-      type: {class: Icon, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: Configurators.Samples.ExtensionsForConfig}
+    - rid: 5218601525075247167
+      type: {class: Icon, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: SST.Configurators.Samples.ExtensionsForConfig}
       data:
         value: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}

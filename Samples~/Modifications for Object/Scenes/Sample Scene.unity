@@ -203,14 +203,14 @@ MonoBehaviour:
         ObjectRefPaths: []
         ValuesData: objectName=Modification Object
         Value:
-          rid: 5218601323263164514
+          rid: 5218601525121908736
       - TypeId: 86f92e79d28733547be11dd5c4c582b9
         TypeDisplayName: SetRotation
         ObjectRefs: []
         ObjectRefPaths: []
         ValuesData: eulerAngles=0|0|45
         Value:
-          rid: 5218601323263164515
+          rid: 5218601525121908737
       - TypeId: d1d2b8d8eef0b64488b4526211355cce
         TypeDisplayName: RandomTint
         ObjectRefs: []
@@ -219,7 +219,7 @@ MonoBehaviour:
 
           To=1|0,713920236|0|1'
         Value:
-          rid: 5218601323263164516
+          rid: 5218601525121908738
       - TypeId: 3f0f84388336daf4caeebe5ebae67c79
         TypeDisplayName: GrowIn
         ObjectRefs: []
@@ -228,7 +228,7 @@ MonoBehaviour:
 
           duration=0,35'
         Value:
-          rid: 5218601323263164517
+          rid: 5218601525121908739
   prefab: {fileID: 1370751817511907607, guid: 7c96f2e6b26311745a47ea7ec31091e1, type: 3}
   spawnRoot: {fileID: 1260787534}
   area: {x: 300, y: 100}
@@ -236,21 +236,21 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 5218601323263164514
-      type: {class: SetName, ns: SST.Configurators.Samples.ModificationsForObject, asm: Configurators.Samples.ModificationsForObject}
+    - rid: 5218601525121908736
+      type: {class: SetName, ns: SST.Configurators.Samples.ModificationsForObject, asm: SST.Configurators.Samples.ModificationsForObject}
       data:
         objectName: Modification Object
-    - rid: 5218601323263164515
-      type: {class: SetRotation, ns: SST.Configurators.Samples.ModificationsForObject, asm: Configurators.Samples.ModificationsForObject}
+    - rid: 5218601525121908737
+      type: {class: SetRotation, ns: SST.Configurators.Samples.ModificationsForObject, asm: SST.Configurators.Samples.ModificationsForObject}
       data:
         eulerAngles: {x: 0, y: 0, z: 45}
-    - rid: 5218601323263164516
-      type: {class: RandomTint, ns: SST.Configurators.Samples.ModificationsForObject, asm: Configurators.Samples.ModificationsForObject}
+    - rid: 5218601525121908738
+      type: {class: RandomTint, ns: SST.Configurators.Samples.ModificationsForObject, asm: SST.Configurators.Samples.ModificationsForObject}
       data:
         From: {r: 1, g: 1, b: 1, a: 1}
         To: {r: 1, g: 0.71392024, b: 0, a: 1}
-    - rid: 5218601323263164517
-      type: {class: GrowIn, ns: SST.Configurators.Samples.ModificationsForObject, asm: Configurators.Samples.ModificationsForObject}
+    - rid: 5218601525121908739
+      type: {class: GrowIn, ns: SST.Configurators.Samples.ModificationsForObject, asm: SST.Configurators.Samples.ModificationsForObject}
       data:
         targetScale: {x: 1, y: 1, z: 1}
         duration: 0.35

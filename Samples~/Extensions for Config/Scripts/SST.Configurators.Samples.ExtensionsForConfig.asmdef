@@ -1,10 +1,9 @@
 {
-    "name": "Configurators.Samples.InstructionsForButton",
-    "rootNamespace": "SST.Configurators.Samples.InstructionsForButton",
+    "name": "SST.Configurators.Samples.ExtensionsForConfig",
+    "rootNamespace": "SST.Configurators.Samples.ExtensionsForConfig",
     "references": [
-        "Configurators",
-        "StableRef",
-        "Unity.InputSystem"
+        "SST.Configurators",
+        "SST.StableRef"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
