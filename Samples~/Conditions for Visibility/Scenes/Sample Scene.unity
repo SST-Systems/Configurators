@@ -463,7 +463,7 @@ MonoBehaviour:
           - target
           ValuesData: text=ACTIVATED
           Value:
-            rid: 5218601329667866696
+            rid: 5218601525075247171
         - TypeId: c8f04b0dd83823c4b9d9b37e4029ece5
           TypeDisplayName: ChangeImageColor
           ObjectRefs:
@@ -472,7 +472,7 @@ MonoBehaviour:
           - target
           ValuesData: color=0|1|0|1
           Value:
-            rid: 5218601329667866697
+            rid: 5218601525075247172
   - State: 1
     OnEnter:
       Instructions:
@@ -485,7 +485,7 @@ MonoBehaviour:
           - target
           ValuesData: text=DEACTIVATED
           Value:
-            rid: 5218601329667866698
+            rid: 5218601525075247173
         - TypeId: c8f04b0dd83823c4b9d9b37e4029ece5
           TypeDisplayName: ChangeImageColor
           ObjectRefs:
@@ -494,28 +494,28 @@ MonoBehaviour:
           - target
           ValuesData: color=1|0|0|1
           Value:
-            rid: 5218601329667866699
+            rid: 5218601525075247174
   initialState: 1
   references:
     version: 2
     RefIds:
-    - rid: 5218601329667866696
-      type: {class: SetTextLegacy, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: Configurators.Samples.ConditionsForVisibility}
+    - rid: 5218601525075247171
+      type: {class: SetTextLegacy, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: SST.Configurators.Samples.ConditionsForVisibility}
       data:
         target: {fileID: 1750782732}
         text: ACTIVATED
-    - rid: 5218601329667866697
-      type: {class: ChangeImageColor, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: Configurators.Samples.ConditionsForVisibility}
+    - rid: 5218601525075247172
+      type: {class: ChangeImageColor, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: SST.Configurators.Samples.ConditionsForVisibility}
       data:
         target: {fileID: 435935925}
         color: {r: 0, g: 1, b: 0, a: 1}
-    - rid: 5218601329667866698
-      type: {class: SetTextLegacy, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: Configurators.Samples.ConditionsForVisibility}
+    - rid: 5218601525075247173
+      type: {class: SetTextLegacy, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: SST.Configurators.Samples.ConditionsForVisibility}
       data:
         target: {fileID: 1750782732}
         text: DEACTIVATED
-    - rid: 5218601329667866699
-      type: {class: ChangeImageColor, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: Configurators.Samples.ConditionsForVisibility}
+    - rid: 5218601525075247174
+      type: {class: ChangeImageColor, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: SST.Configurators.Samples.ConditionsForVisibility}
       data:
         target: {fileID: 435935925}
         color: {r: 1, g: 0, b: 0, a: 1}
@@ -543,7 +543,7 @@ MonoBehaviour:
           ObjectRefPaths: []
           ValuesData: 
           Value:
-            rid: 5218601329667866689
+            rid: 5218601525075247175
   - State: 1
     When:
       Conditions:
@@ -551,8 +551,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 5218601329667866689
-      type: {class: All, ns: SST.Configurators, asm: Configurators}
+    - rid: 5218601525075247175
+      type: {class: All, ns: SST.Configurators, asm: SST.Configurators}
       data:
         Conditions:
           _items:
@@ -564,7 +564,7 @@ MonoBehaviour:
             - Toggle
             ValuesData: 
             Value:
-              rid: 5218601329667866690
+              rid: 5218601525075247176
           - TypeId: 9028994646e97b44f8f8a0a5e6ae9acd
             TypeDisplayName: ToggleOn
             ObjectRefs:
@@ -573,13 +573,13 @@ MonoBehaviour:
             - Toggle
             ValuesData: 
             Value:
-              rid: 5218601329667866691
-    - rid: 5218601329667866690
-      type: {class: ToggleOn, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: Configurators.Samples.ConditionsForVisibility}
+              rid: 5218601525075247177
+    - rid: 5218601525075247176
+      type: {class: ToggleOn, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: SST.Configurators.Samples.ConditionsForVisibility}
       data:
         Toggle: {fileID: 153409125}
-    - rid: 5218601329667866691
-      type: {class: ToggleOn, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: Configurators.Samples.ConditionsForVisibility}
+    - rid: 5218601525075247177
+      type: {class: ToggleOn, ns: SST.Configurators.Samples.ConditionsForVisibility, asm: SST.Configurators.Samples.ConditionsForVisibility}
       data:
         Toggle: {fileID: 1934197165}
 --- !u!1 &502579207

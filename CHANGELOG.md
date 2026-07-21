@@ -1,5 +1,11 @@
 # Configurators
 
+## 3.1.1 - 21.07.2026
+
+### Changed
+
+- asmdef rename
+
 ## 3.1.0 - 17.07.2026
 
 Context-aware conditions — a generic sibling for every Condition type, alongside the existing context-free ones in the same files.

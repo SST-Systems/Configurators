@@ -1,9 +1,9 @@
 {
-    "name": "Configurators.Samples.ZenjectForConfigurators",
-    "rootNamespace": "SST.Configurators.Samples.ZenjectForConfigurators",
+    "name": "SST.Configurators.Samples.ModificationsForObject",
+    "rootNamespace": "SST.Configurators.Samples.ModificationsForObject",
     "references": [
-        "Configurators",
-        "Zenject"
+        "SST.Configurators",
+        "SST.StableRef"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,9 +1,9 @@
 {
-    "name": "Configurators",
-    "rootNamespace": "Configurators",
+    "name": "SST.Configurators.Samples.ConditionsForVisibility",
+    "rootNamespace": "SST.Configurators.Samples.ConditionsForVisibility",
     "references": [
-        "Pooling",
-        "StableRef"
+        "SST.Configurators",
+        "SST.StableRef"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

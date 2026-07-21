@@ -23,33 +23,33 @@ MonoBehaviour:
         ObjectRefPaths: []
         ValuesData: value=Soft
         Value:
-          rid: 5218601323263164504
+          rid: 5218601525075247168
       - TypeId: 9ed2979784890a14d803463d196ed7cd
         TypeDisplayName: Abbreviation
         ObjectRefs: []
         ObjectRefPaths: []
         ValuesData: value=Default
         Value:
-          rid: 5218601323263164512
+          rid: 5218601525075247169
       - TypeId: 2e6b2e1ae4d4aff42b86898b03c45bab
         TypeDisplayName: IconById
         ObjectRefs: []
         ObjectRefPaths: []
         ValuesData: Id=Box
         Value:
-          rid: 5218601323263164509
+          rid: 5218601525075247170
   references:
     version: 2
     RefIds:
-    - rid: 5218601323263164504
-      type: {class: DisplayName, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: Configurators.Samples.ExtensionsForConfig}
+    - rid: 5218601525075247168
+      type: {class: DisplayName, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: SST.Configurators.Samples.ExtensionsForConfig}
       data:
         value: Soft
-    - rid: 5218601323263164509
-      type: {class: IconById, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: Configurators.Samples.ExtensionsForConfig}
-      data:
-        Id: Box
-    - rid: 5218601323263164512
-      type: {class: Abbreviation, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: Configurators.Samples.ExtensionsForConfig}
+    - rid: 5218601525075247169
+      type: {class: Abbreviation, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: SST.Configurators.Samples.ExtensionsForConfig}
       data:
         value: Default
+    - rid: 5218601525075247170
+      type: {class: IconById, ns: SST.Configurators.Samples.ExtensionsForConfig, asm: SST.Configurators.Samples.ExtensionsForConfig}
+      data:
+        Id: Box
