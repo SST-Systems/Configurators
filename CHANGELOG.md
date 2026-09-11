@@ -1,5 +1,11 @@
 # Configurators
 
+## 3.1.2 - 21.07.2026
+
+### Fixed
+
+- fix missing property in sample instructions
+
 ## 3.1.1 - 21.07.2026
 
 ### Changed

@@ -223,10 +223,21 @@ MonoBehaviour:
   button: {fileID: 2392250155675363655}
   instructionProcessor:
     Instructions:
-      _items: []
+      _items:
+      - TypeId: e5d93b6b5c1b248498f2ddb6129b995d
+        TypeDisplayName: LogMessage
+        ObjectRefs: []
+        ObjectRefPaths: []
+        ValuesData: message=Button on click!
+        Value:
+          rid: 5218601525121908740
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5218601525121908740
+      type: {class: LogMessage, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        message: Button on click!
 --- !u!114 &7556007631703176613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,10 +253,40 @@ MonoBehaviour:
   button: {fileID: 2392250155675363655}
   instructionProcessor:
     Instructions:
-      _items: []
+      _items:
+      - TypeId: c1b82a4cfb2969b4d905231b0ee51e78
+        TypeDisplayName: CancelInstructionForButton
+        ObjectRefs:
+        - {fileID: 7003903346626562671}
+        ObjectRefPaths:
+        - target
+        ValuesData: 
+        Value:
+          rid: 5218601525121908741
+      - TypeId: f9d02f90913d23143a2b01803a25d213
+        TypeDisplayName: SetScaleRectTransform
+        ObjectRefs:
+        - {fileID: 5351642374369158244}
+        ObjectRefPaths:
+        - RectTransform
+        ValuesData: WaitForCompletion=0
+        Value:
+          rid: 5218601525121908742
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5218601525121908741
+      type: {class: CancelInstructionForButton, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        target: {fileID: 7003903346626562671}
+    - rid: 5218601525121908742
+      type: {class: SetScaleRectTransform, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        RectTransform: {fileID: 5351642374369158244}
+        AnimSettings:
+          Duration: 0.12
+          Scale: 1
+        WaitForCompletion: 0
 --- !u!114 &7003903346626562671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,10 +302,40 @@ MonoBehaviour:
   button: {fileID: 2392250155675363655}
   instructionProcessor:
     Instructions:
-      _items: []
+      _items:
+      - TypeId: c1b82a4cfb2969b4d905231b0ee51e78
+        TypeDisplayName: CancelInstructionForButton
+        ObjectRefs:
+        - {fileID: 7556007631703176613}
+        ObjectRefPaths:
+        - target
+        ValuesData: 
+        Value:
+          rid: 5218601525121908743
+      - TypeId: f9d02f90913d23143a2b01803a25d213
+        TypeDisplayName: SetScaleRectTransform
+        ObjectRefs:
+        - {fileID: 5351642374369158244}
+        ObjectRefPaths:
+        - RectTransform
+        ValuesData: WaitForCompletion=0
+        Value:
+          rid: 5218601525121908744
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5218601525121908743
+      type: {class: CancelInstructionForButton, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        target: {fileID: 7556007631703176613}
+    - rid: 5218601525121908744
+      type: {class: SetScaleRectTransform, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        RectTransform: {fileID: 5351642374369158244}
+        AnimSettings:
+          Duration: 0.12
+          Scale: 1
+        WaitForCompletion: 0
 --- !u!114 &4803630548086577829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,10 +351,23 @@ MonoBehaviour:
   button: {fileID: 2392250155675363655}
   instructionProcessor:
     Instructions:
-      _items: []
+      _items:
+      - TypeId: 5f1dc2eec8e34e345b0fdc18493eaba8
+        TypeDisplayName: SelectSelectable
+        ObjectRefs:
+        - {fileID: 2392250155675363655}
+        ObjectRefPaths:
+        - selectable
+        ValuesData: 
+        Value:
+          rid: 5218601525121908745
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5218601525121908745
+      type: {class: SelectSelectable, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        selectable: {fileID: 2392250155675363655}
 --- !u!114 &1533685922930869260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,10 +383,23 @@ MonoBehaviour:
   button: {fileID: 2392250155675363655}
   instructionProcessor:
     Instructions:
-      _items: []
+      _items:
+      - TypeId: 3389fadbf2c7c384b8b011463e8a809e
+        TypeDisplayName: DeselectSelectable
+        ObjectRefs:
+        - {fileID: 2392250155675363655}
+        ObjectRefPaths:
+        - selectable
+        ValuesData: 
+        Value:
+          rid: 5218601525121908746
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5218601525121908746
+      type: {class: DeselectSelectable, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        selectable: {fileID: 2392250155675363655}
 --- !u!114 &1481602920599316807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -318,10 +415,42 @@ MonoBehaviour:
   button: {fileID: 2392250155675363655}
   instructionProcessor:
     Instructions:
-      _items: []
+      _items:
+      - TypeId: 7d90d685df9416a4aa8f8f76b7d30d93
+        TypeDisplayName: ShakeRectTransform
+        ObjectRefs:
+        - {fileID: 5351642374369158244}
+        ObjectRefPaths:
+        - RectTransform
+        ValuesData: WaitForCompletion=0
+        Value:
+          rid: 5218601525121908747
+      - TypeId: 6464174790d1ee845bb5950447015e80
+        TypeDisplayName: ChangeTextColor
+        ObjectRefs:
+        - {fileID: 2980172576403536008}
+        ObjectRefPaths:
+        - Text
+        ValuesData: Color=1|0,4669811|0,4669811|1
+        Value:
+          rid: 5218601525121908748
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5218601525121908747
+      type: {class: ShakeRectTransform, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        RectTransform: {fileID: 5351642374369158244}
+        AnimSettings:
+          Duration: 0.25
+          Magnitude: 15
+          Frequency: 50
+        WaitForCompletion: 0
+    - rid: 5218601525121908748
+      type: {class: ChangeTextColor, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        Text: {fileID: 2980172576403536008}
+        Color: {r: 1, g: 0.4669811, b: 0.4669811, a: 1}
 --- !u!114 &8386040675042977460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,10 +466,24 @@ MonoBehaviour:
   button: {fileID: 2392250155675363655}
   instructionProcessor:
     Instructions:
-      _items: []
+      _items:
+      - TypeId: 6464174790d1ee845bb5950447015e80
+        TypeDisplayName: ChangeTextColor
+        ObjectRefs:
+        - {fileID: 2980172576403536008}
+        ObjectRefPaths:
+        - Text
+        ValuesData: Color=0,196078435|0,196078435|0,196078435|1
+        Value:
+          rid: 5218601525121908749
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5218601525121908749
+      type: {class: ChangeTextColor, ns: SST.Configurators.Samples.InstructionsForButton, asm: SST.Configurators.Samples.InstructionsForButton}
+      data:
+        Text: {fileID: 2980172576403536008}
+        Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
 --- !u!114 &8808870955139359143
 MonoBehaviour:
   m_ObjectHideFlags: 0
