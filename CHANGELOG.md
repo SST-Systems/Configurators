@@ -1,5 +1,11 @@
 # Configurators
 
+## 3.1.4 - 11.09.2026
+
+### Changed
+
+- Bumped the `com.sst-systems.stableref` dependency to 2.0.0.
+
 ## 3.1.3 - 21.07.2026
 
 ### Fixed
