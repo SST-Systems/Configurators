@@ -285,7 +285,7 @@ MonoBehaviour:
         RectTransform: {fileID: 5351642374369158244}
         AnimSettings:
           Duration: 0.12
-          Scale: 1
+          Scale: 1.2
         WaitForCompletion: 0
 --- !u!114 &7003903346626562671
 MonoBehaviour:

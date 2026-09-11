@@ -1,5 +1,11 @@
 # Configurators
 
+## 3.1.3 - 21.07.2026
+
+### Fixed
+
+- fix SetScaleRectTransform in sample instructions
+
 ## 3.1.2 - 21.07.2026
 
 ### Fixed
