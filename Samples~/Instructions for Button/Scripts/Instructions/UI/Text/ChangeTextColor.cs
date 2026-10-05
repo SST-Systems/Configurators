@@ -10,7 +10,7 @@ namespace SST.Configurators.Samples.InstructionsForButton
     /// Shows the sync variant of the data/handler split (no async, runs instantly).
     /// </summary>
     [Serializable]
-    [StableRefCategory("UI/Text")]
+    [RefCategory("UI/Text")]
     public class ChangeTextColor : InstructionData<ChangeTextHandler>
     {
         public Text Text;

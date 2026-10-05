@@ -11,7 +11,7 @@ namespace SST.Configurators.Samples.InstructionsForButton
     /// Handy to move keyboard/gamepad focus as part of a button's instruction list.
     /// </summary>
     [Serializable]
-    [StableRefCategory("UI/Navigation")]
+    [RefCategory("UI/Navigation")]
     public class SelectSelectable : Instruction
     {
         [SerializeField] private Selectable selectable;

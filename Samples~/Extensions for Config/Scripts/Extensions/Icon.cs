@@ -6,7 +6,7 @@ namespace SST.Configurators.Samples.ExtensionsForConfig
 {
     /// <summary>Inline extension: a Sprite referenced directly (no lookup needed).</summary>
     [Serializable]
-    [StableRefCategory("Currency")]
+    [RefCategory("Currency")]
     public class Icon : Extension<Sprite>
     {
         [SerializeField] private Sprite value;

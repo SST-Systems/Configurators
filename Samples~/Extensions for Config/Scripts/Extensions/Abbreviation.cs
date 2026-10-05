@@ -6,7 +6,7 @@ namespace SST.Configurators.Samples.ExtensionsForConfig
 {
     /// <summary>Inline extension: a short currency abbreviation (e.g. "GLD") held inline.</summary>
     [Serializable]
-    [StableRefCategory("Currency")]
+    [RefCategory("Currency")]
     public class Abbreviation : Extension<string>
     {
         [SerializeField] private string value;
