@@ -8,8 +8,8 @@ namespace SST.Configurators
     /// Composite condition that inverts a single child condition (logical NOT). A missing child is treated as not met.
     /// </summary>
     [Serializable]
-    [StableTypeId("SST.Configurators.Not")]
-    [StableRefCategory("Composite")]
+    [RefTypeId("SST.Configurators.Not")]
+    [RefCategory("Composite")]
     public class Not : CompositeCondition
     {
         /// <summary>The child condition to negate.</summary>
@@ -29,8 +29,8 @@ namespace SST.Configurators
     /// </summary>
     /// <typeparam name="TContext">The context the condition is evaluated against.</typeparam>
     [Serializable]
-    [StableTypeId("SST.Configurators.NotContext")]
-    [StableRefCategory("Composite")]
+    [RefTypeId("SST.Configurators.NotContext")]
+    [RefCategory("Composite")]
     public class Not<TContext> : CompositeCondition<TContext>
     {
         /// <summary>The child condition to negate.</summary>

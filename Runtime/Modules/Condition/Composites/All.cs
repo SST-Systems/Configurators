@@ -8,8 +8,8 @@ namespace SST.Configurators
     /// Composite condition that is met when every child condition is met (logical AND). An empty set is met.
     /// </summary>
     [Serializable]
-    [StableTypeId("SST.Configurators.All")]
-    [StableRefCategory("Composite")]
+    [RefTypeId("SST.Configurators.All")]
+    [RefCategory("Composite")]
     public class All : CompositeCondition
     {
         /// <summary>The child conditions combined with logical AND.</summary>
@@ -46,8 +46,8 @@ namespace SST.Configurators
     /// </summary>
     /// <typeparam name="TContext">The context the condition is evaluated against.</typeparam>
     [Serializable]
-    [StableTypeId("SST.Configurators.AllContext")]
-    [StableRefCategory("Composite")]
+    [RefTypeId("SST.Configurators.AllContext")]
+    [RefCategory("Composite")]
     public class All<TContext> : CompositeCondition<TContext>
     {
         /// <summary>The child conditions combined with logical AND.</summary>
