@@ -8,7 +8,7 @@ namespace SST.Configurators.Samples.ExtensionsForConfig
 {
     /// <summary>Async handler-based extension: stores only the sprite id; the paired handler does the fetching.</summary>
     [Serializable]
-    [StableRefCategory("Currency")]
+    [RefCategory("Currency")]
     public class IconById : AsyncExtensionData<Sprite, IconByIdHandler>
     {
         public string Id;

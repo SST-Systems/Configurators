@@ -8,7 +8,7 @@ namespace SST.Configurators.Samples.ModificationsForObject
     /// Inline sync modification: sets the Shape's Image color to a fixed value.
     /// </summary>
     [Serializable]
-    [StableRefCategory("Appearance")]
+    [RefCategory("Appearance")]
     public class SetColor : Modification<Shape>
     {
         [SerializeField] private Color color = Color.white;

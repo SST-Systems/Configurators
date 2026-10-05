@@ -11,7 +11,7 @@ namespace SST.Configurators.Samples.InstructionsForButton
     /// currently selected. Demonstrates a small guarded EventSystem action as an instruction step.
     /// </summary>
     [Serializable]
-    [StableRefCategory("UI/Navigation")]
+    [RefCategory("UI/Navigation")]
     public class DeselectSelectable : Instruction
     {
         [SerializeField] private Selectable selectable;
