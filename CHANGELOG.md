@@ -1,5 +1,16 @@
 # Configurators
 
+## 3.2.0 - 05.10.2026
+
+### Changed
+
+- Bumped the `com.sst-systems.stableref` dependency to 3.0.0.
+- Migrated the built-in composite conditions (`All`, `Any`, `None`, `Not` and their `<TContext>` variants) to the StableRef 3.0.0 attribute names: `[StableTypeId]` → `[RefTypeId]`, `[StableRefCategory]` → `[RefCategory]`. Type IDs are unchanged, so existing serialized data keeps resolving.
+
+### Migration
+
+- Custom configurators decorated with `[StableTypeId]` / `[StableRefCategory]` must be updated to `[RefTypeId]` / `[RefCategory]`; keep the same ID strings to preserve serialized references.
+
 ## 3.1.4 - 11.09.2026
 
 ### Changed

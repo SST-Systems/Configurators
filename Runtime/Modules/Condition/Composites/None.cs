@@ -8,8 +8,8 @@ namespace SST.Configurators
     /// Composite condition that is met when no child condition is met (logical NOR). An empty set is met.
     /// </summary>
     [Serializable]
-    [StableTypeId("SST.Configurators.None")]
-    [StableRefCategory("Composite")]
+    [RefTypeId("SST.Configurators.None")]
+    [RefCategory("Composite")]
     public class None : CompositeCondition
     {
         /// <summary>The child conditions; the composite is met only while none of them are.</summary>
@@ -46,8 +46,8 @@ namespace SST.Configurators
     /// </summary>
     /// <typeparam name="TContext">The context the condition is evaluated against.</typeparam>
     [Serializable]
-    [StableTypeId("SST.Configurators.NoneContext")]
-    [StableRefCategory("Composite")]
+    [RefTypeId("SST.Configurators.NoneContext")]
+    [RefCategory("Composite")]
     public class None<TContext> : CompositeCondition<TContext>
     {
         /// <summary>The child conditions; the composite is met only while none of them are.</summary>
