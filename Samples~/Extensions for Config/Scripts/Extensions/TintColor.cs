@@ -6,7 +6,7 @@ namespace SST.Configurators.Samples.ExtensionsForConfig
 {
     /// <summary>Inline extension: a label tint colour held inline.</summary>
     [Serializable]
-    [StableRefCategory("Currency")]
+    [RefCategory("Currency")]
     public class TintColor : Extension<Color>
     {
         [SerializeField] private Color value = Color.white;

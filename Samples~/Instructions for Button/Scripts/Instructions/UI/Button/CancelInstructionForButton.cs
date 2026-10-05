@@ -9,7 +9,7 @@ namespace SST.Configurators.Samples.InstructionsForButton
     /// Shows how a later step can abort a still-running async step (e.g. cancel a shake on pointer up).
     /// </summary>
     [Serializable]
-    [StableRefCategory("UI/Button")]
+    [RefCategory("UI/Button")]
     public class CancelInstructionForButton : Instruction
     {
         [SerializeField] private InstructionForButtonBase target;

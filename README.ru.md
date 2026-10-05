@@ -68,7 +68,7 @@ public void ApplyBuff(Unit unit, BuffType type, float value)
 **Стало** — новое поведение = новый класс, код-потребитель не меняется никогда:
 
 ```csharp
-[Serializable, StableRefCategory("Stats")]
+[Serializable, RefCategory("Stats")]
 public class SetMaxHealth : Modification<Unit>
 {
     public int Value;
@@ -121,7 +121,7 @@ Unity 2021.3+
 **1. Опиши поведение** — тот самый класс из [«Зачем»](#зачем):
 
 ```csharp
-[Serializable, StableRefCategory("Stats")]
+[Serializable, RefCategory("Stats")]
 public class SetMaxHealth : Modification<Unit>
 {
     public int Value;
@@ -264,7 +264,7 @@ await modificationProcessor.Apply(context);
 
 ```csharp
 [Serializable]
-[StableRefCategory("Stats")]
+[RefCategory("Stats")]
 public class SetMaxHealth : Modification<Unit>
 {
     public int Value;
@@ -287,7 +287,7 @@ public class SetMaxHealth : Modification<Unit>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Time")]
+[RefCategory("Time")]
 public class RevealAfterDelay : AsyncModification<Unit>
 {
     public float Seconds;
@@ -304,7 +304,7 @@ public class RevealAfterDelay : AsyncModification<Unit>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Spawn")]
+[RefCategory("Spawn")]
 public class SpawnChild : ModificationData<Unit, SpawnChildHandler>
 {
     public Unit Prefab;
@@ -323,7 +323,7 @@ public class SpawnChildHandler : ModificationHandler<SpawnChild, Unit>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Appearance")]
+[RefCategory("Appearance")]
 public class ApplySkin : AsyncModificationData<Unit, ApplySkinHandler>
 {
     public string SkinId;
@@ -416,7 +416,7 @@ _modificationManager.ResolveModifications(modificationProcessor, lifetimeOwner: 
 
 ```csharp
 [Serializable]
-[StableRefCategory("GameObject")]
+[RefCategory("GameObject")]
 public class GameObjectSetActive : Instruction
 {
     public GameObject Object;
@@ -439,7 +439,7 @@ public class GameObjectSetActive : Instruction
 ```csharp
 // Задержка — токен передаётся в Task.Delay, отмена работает сразу
 [Serializable]
-[StableRefCategory("Time")]
+[RefCategory("Time")]
 public class WaitForSeconds : AsyncInstruction
 {
     public float Duration;
@@ -452,7 +452,7 @@ public class WaitForSeconds : AsyncInstruction
 
 // Цикл с проверкой отмены на каждой итерации
 [Serializable]
-[StableRefCategory("Movement")]
+[RefCategory("Movement")]
 public class MoveToTarget : AsyncInstruction
 {
     public Transform Object;
@@ -476,7 +476,7 @@ public class MoveToTarget : AsyncInstruction
 
 ```csharp
 [Serializable]
-[StableRefCategory("Audio")]
+[RefCategory("Audio")]
 public class SetMasterVolume : InstructionData<SetMasterVolumeHandler>
 {
     [Range(0, 1)] public float Volume = 1f;
@@ -495,7 +495,7 @@ public class SetMasterVolumeHandler : InstructionHandler<SetMasterVolume>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Audio")]
+[RefCategory("Audio")]
 public class PlaySound : AsyncInstructionData<PlaySoundHandler>
 {
     public AudioClip Clip;
@@ -592,7 +592,7 @@ _instructionManager.ResolveInstructions(instructionProcessor, lifetimeOwner: new
 
 ```csharp
 [Serializable]
-[StableRefCategory("Time")]
+[RefCategory("Time")]
 public class IsNight : Condition
 {
     public override bool IsMet() => DayCycle.Current == TimeOfDay.Night;
@@ -607,7 +607,7 @@ public class IsNight : Condition
 ```csharp
 // Данные — лежат в конфиге, сериализуются
 [Serializable]
-[StableRefCategory("Health")]
+[RefCategory("Health")]
 public class HealthBelow : ConditionData<HealthBelowHandler>
 {
     [Range(0, 1)] public float Threshold;
@@ -718,7 +718,7 @@ All
 ```csharp
 // Inline-условие с контекстом
 [Serializable]
-[StableRefCategory("Health")]
+[RefCategory("Health")]
 public class HealthBelow : Condition<Unit>
 {
     [Range(0, 1)] public float Threshold;
@@ -762,7 +762,7 @@ private void Setup(Unit unit)
 
 ```csharp
 [Serializable]
-[StableRefCategory("Limits")]
+[RefCategory("Limits")]
 public class MaxCount : Extension<int>
 {
     [SerializeField] private int value;
@@ -791,7 +791,7 @@ Async-экстеншены (inline или с хендлером) нужно за
 
 ```csharp
 [Serializable]
-[StableRefCategory("Remote")]
+[RefCategory("Remote")]
 public class RemoteFlag : AsyncExtension<bool>
 {
     public string Key;
@@ -805,7 +805,7 @@ public class RemoteFlag : AsyncExtension<bool>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Assets")]
+[RefCategory("Assets")]
 public class IconById : ExtensionData<Sprite, IconByIdHandler>
 {
     public string Id;
@@ -824,7 +824,7 @@ public class IconByIdHandler : ExtensionHandler<IconById, Sprite>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Assets")]
+[RefCategory("Assets")]
 public class SpriteById : AsyncExtensionData<Sprite, SpriteByIdHandler>
 {
     public string Id;
@@ -889,11 +889,11 @@ foreach (var tag in config.Extensions.GetExtensions<Tag>())
 
 Встроенные процессоры (`ModificationProcessor<T>`, `InstructionProcessor`, `ConditionProcessor`, `ExtensionProcessor`) уже отдают типизированный дропдаун — кладёшь процессор в конфиг / компонент и он сразу работает.
 
-Чтобы сгруппировать свои типы под подменю в дропдауне, навесь `[StableRefCategory("Path/Submenu")]`:
+Чтобы сгруппировать свои типы под подменю в дропдауне, навесь `[RefCategory("Path/Submenu")]`:
 
 ```csharp
 [Serializable]
-[StableRefCategory("Inventory/Item")]
+[RefCategory("Inventory/Item")]
 public class MaxCount : Extension<int> { ... }
 ```
 

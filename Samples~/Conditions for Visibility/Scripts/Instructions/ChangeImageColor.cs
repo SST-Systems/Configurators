@@ -10,7 +10,7 @@ namespace SST.Configurators.Samples.ConditionsForVisibility
     /// e.g. tint the panel differently for each state.
     /// </summary>
     [Serializable]
-    [StableRefCategory("UI")]
+    [RefCategory("UI")]
     public class ChangeImageColor : Instruction
     {
         [SerializeField] private Image target;

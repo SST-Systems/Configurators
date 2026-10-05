@@ -68,7 +68,7 @@ public void ApplyBuff(Unit unit, BuffType type, float value)
 **After** — a new behaviour means a new class; the consuming code never changes:
 
 ```csharp
-[Serializable, StableRefCategory("Stats")]
+[Serializable, RefCategory("Stats")]
 public class SetMaxHealth : Modification<Unit>
 {
     public int Value;
@@ -121,7 +121,7 @@ A minimal end-to-end example on the Modifications module — from class to run. 
 **1. Describe a behaviour** — the same class from [Why](#why):
 
 ```csharp
-[Serializable, StableRefCategory("Stats")]
+[Serializable, RefCategory("Stats")]
 public class SetMaxHealth : Modification<Unit>
 {
     public int Value;
@@ -264,7 +264,7 @@ The simplest form — an inline modification with a synchronous `Apply`:
 
 ```csharp
 [Serializable]
-[StableRefCategory("Stats")]
+[RefCategory("Stats")]
 public class SetMaxHealth : Modification<Unit>
 {
     public int Value;
@@ -287,7 +287,7 @@ The processor runs the list in order — sync entries inline, async entries awai
 
 ```csharp
 [Serializable]
-[StableRefCategory("Time")]
+[RefCategory("Time")]
 public class RevealAfterDelay : AsyncModification<Unit>
 {
     public float Seconds;
@@ -304,7 +304,7 @@ public class RevealAfterDelay : AsyncModification<Unit>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Spawn")]
+[RefCategory("Spawn")]
 public class SpawnChild : ModificationData<Unit, SpawnChildHandler>
 {
     public Unit Prefab;
@@ -323,7 +323,7 @@ public class SpawnChildHandler : ModificationHandler<SpawnChild, Unit>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Appearance")]
+[RefCategory("Appearance")]
 public class ApplySkin : AsyncModificationData<Unit, ApplySkinHandler>
 {
     public string SkinId;
@@ -416,7 +416,7 @@ The simplest form — an inline instruction with a synchronous `Apply`:
 
 ```csharp
 [Serializable]
-[StableRefCategory("GameObject")]
+[RefCategory("GameObject")]
 public class GameObjectSetActive : Instruction
 {
     public GameObject Object;
@@ -439,7 +439,7 @@ Pick along two axes: **inline vs handler-based** (do you need injected dependenc
 ```csharp
 // Delay — token passed to Task.Delay, cancellation works immediately
 [Serializable]
-[StableRefCategory("Time")]
+[RefCategory("Time")]
 public class WaitForSeconds : AsyncInstruction
 {
     public float Duration;
@@ -452,7 +452,7 @@ public class WaitForSeconds : AsyncInstruction
 
 // Loop with per-iteration cancellation check
 [Serializable]
-[StableRefCategory("Movement")]
+[RefCategory("Movement")]
 public class MoveToTarget : AsyncInstruction
 {
     public Transform Object;
@@ -476,7 +476,7 @@ public class MoveToTarget : AsyncInstruction
 
 ```csharp
 [Serializable]
-[StableRefCategory("Audio")]
+[RefCategory("Audio")]
 public class SetMasterVolume : InstructionData<SetMasterVolumeHandler>
 {
     [Range(0, 1)] public float Volume = 1f;
@@ -495,7 +495,7 @@ public class SetMasterVolumeHandler : InstructionHandler<SetMasterVolume>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Audio")]
+[RefCategory("Audio")]
 public class PlaySound : AsyncInstructionData<PlaySoundHandler>
 {
     public AudioClip Clip;
@@ -592,7 +592,7 @@ The simplest form — an inline condition polled directly via `IsMet()`:
 
 ```csharp
 [Serializable]
-[StableRefCategory("Time")]
+[RefCategory("Time")]
 public class IsNight : Condition
 {
     public override bool IsMet() => DayCycle.Current == TimeOfDay.Night;
@@ -607,7 +607,7 @@ public class IsNight : Condition
 ```csharp
 // Data — lives in the config, serialized
 [Serializable]
-[StableRefCategory("Health")]
+[RefCategory("Health")]
 public class HealthBelow : ConditionData<HealthBelowHandler>
 {
     [Range(0, 1)] public float Threshold;
@@ -718,7 +718,7 @@ Every condition type has a context-aware sibling living in the same file, distin
 ```csharp
 // Inline, context-aware
 [Serializable]
-[StableRefCategory("Health")]
+[RefCategory("Health")]
 public class HealthBelow : Condition<Unit>
 {
     [Range(0, 1)] public float Threshold;
@@ -762,7 +762,7 @@ The simplest form — an inline extension with a synchronous `GetValue`:
 
 ```csharp
 [Serializable]
-[StableRefCategory("Limits")]
+[RefCategory("Limits")]
 public class MaxCount : Extension<int>
 {
     [SerializeField] private int value;
@@ -791,7 +791,7 @@ Async extensions (inline or handler-based) must be resolved through `IExtensionM
 
 ```csharp
 [Serializable]
-[StableRefCategory("Remote")]
+[RefCategory("Remote")]
 public class RemoteFlag : AsyncExtension<bool>
 {
     public string Key;
@@ -805,7 +805,7 @@ public class RemoteFlag : AsyncExtension<bool>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Assets")]
+[RefCategory("Assets")]
 public class IconById : ExtensionData<Sprite, IconByIdHandler>
 {
     public string Id;
@@ -824,7 +824,7 @@ public class IconByIdHandler : ExtensionHandler<IconById, Sprite>
 
 ```csharp
 [Serializable]
-[StableRefCategory("Assets")]
+[RefCategory("Assets")]
 public class SpriteById : AsyncExtensionData<Sprite, SpriteByIdHandler>
 {
     public string Id;
@@ -889,11 +889,11 @@ How a configurator travels from picking a module to automatic cleanup. First you
 
 The built-in processors (`ModificationProcessor<T>`, `InstructionProcessor`, `ConditionProcessor`, `ExtensionProcessor`) already expose a typed dropdown — drop one on a config or component and it just works.
 
-To group your types under a submenu in that dropdown, decorate the class with `[StableRefCategory("Path/Submenu")]`:
+To group your types under a submenu in that dropdown, decorate the class with `[RefCategory("Path/Submenu")]`:
 
 ```csharp
 [Serializable]
-[StableRefCategory("Inventory/Item")]
+[RefCategory("Inventory/Item")]
 public class MaxCount : Extension<int> { ... }
 ```
 

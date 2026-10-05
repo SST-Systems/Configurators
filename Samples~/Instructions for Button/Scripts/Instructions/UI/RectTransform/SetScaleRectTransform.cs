@@ -11,7 +11,7 @@ namespace SST.Configurators.Samples.InstructionsForButton
     /// Serialized fields live here; the actual coroutine-like logic lives in the paired handler.
     /// </summary>
     [Serializable]
-    [StableRefCategory("UI/RectTransform")]
+    [RefCategory("UI/RectTransform")]
     public class SetScaleRectTransform : AsyncInstructionData<SetScaleRectTransformHandler>
     {
         public RectTransform RectTransform;

@@ -6,7 +6,7 @@ namespace SST.Configurators.Samples.ExtensionsForConfig
 {
     /// <summary>Inline extension: a human-readable display name held directly on the extension.</summary>
     [Serializable]
-    [StableRefCategory("Currency")]
+    [RefCategory("Currency")]
     public class DisplayName : Extension<string>
     {
         [SerializeField] private string value;
