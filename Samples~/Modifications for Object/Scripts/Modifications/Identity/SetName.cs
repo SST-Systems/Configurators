@@ -9,7 +9,7 @@ namespace SST.Configurators.Samples.ModificationsForObject
     /// Grouped under the "Identity" category in the inspector Add dropdown.
     /// </summary>
     [Serializable]
-    [StableRefCategory("Identity")]
+    [RefCategory("Identity")]
     public class SetName : Modification<Shape>
     {
         [SerializeField] private string objectName = "Shape";

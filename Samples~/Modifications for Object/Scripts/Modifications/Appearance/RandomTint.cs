@@ -9,7 +9,7 @@ namespace SST.Configurators.Samples.ModificationsForObject
     /// the logic lives in RandomTintHandler so the handler can be pooled/DI-injected.
     /// </summary>
     [Serializable]
-    [StableRefCategory("Appearance")]
+    [RefCategory("Appearance")]
     public class RandomTint : ModificationData<Shape, RandomTintHandler>
     {
         public Color From = Color.white;

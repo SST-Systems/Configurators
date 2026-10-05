@@ -11,7 +11,7 @@ namespace SST.Configurators.Samples.InstructionsForButton
     /// magnitude. Serialized fields live here; the animation logic lives in the paired handler.
     /// </summary>
     [Serializable]
-    [StableRefCategory("UI/RectTransform")]
+    [RefCategory("UI/RectTransform")]
     public class ShakeRectTransform : AsyncInstructionData<ShakeRectTransformHandler>
     {
         public RectTransform RectTransform;

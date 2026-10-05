@@ -11,7 +11,7 @@ namespace SST.Configurators.Samples.ModificationsForObject
     /// targetScale over 'duration'. Awaited by the spawner; cancellation is tied to owner lifetime.
     /// </summary>
     [Serializable]
-    [StableRefCategory("Transform")]
+    [RefCategory("Transform")]
     public class GrowIn : AsyncModification<Shape>
     {
         [SerializeField] private Vector3 targetScale = Vector3.one;

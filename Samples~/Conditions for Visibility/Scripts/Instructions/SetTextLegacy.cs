@@ -10,7 +10,7 @@ namespace SST.Configurators.Samples.ConditionsForVisibility
     /// <see cref="Apply"/> — e.g. show a per-state status label.
     /// </summary>
     [Serializable]
-    [StableRefCategory("UI")]
+    [RefCategory("UI")]
     public class SetTextLegacy : Instruction
     {
         [SerializeField] private Text target;

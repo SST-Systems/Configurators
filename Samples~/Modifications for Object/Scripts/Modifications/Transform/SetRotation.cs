@@ -8,7 +8,7 @@ namespace SST.Configurators.Samples.ModificationsForObject
     /// Inline sync modification: sets the Shape's rotation from Inspector-authored euler angles.
     /// </summary>
     [Serializable]
-    [StableRefCategory("Transform")]
+    [RefCategory("Transform")]
     public class SetRotation : Modification<Shape>
     {
         [SerializeField] private Vector3 eulerAngles;

@@ -9,7 +9,7 @@ namespace SST.Configurators.Samples.ConditionsForVisibility
     /// the paired <see cref="ToggleOnHandler"/> supplies the runtime logic.
     /// </summary>
     [Serializable]
-    [StableRefCategory("UI")]
+    [RefCategory("UI")]
     public class ToggleOn : ConditionData<ToggleOnHandler>
     {
         public Toggle Toggle;
