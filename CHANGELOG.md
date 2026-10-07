@@ -1,5 +1,16 @@
 # Configurators
 
+## 3.3.0 - 07.10.2026
+
+### Changed
+
+- Bumped the `com.sst-systems.stableref` dependency to 4.0.0.
+- Migrated the processors (`ConditionProcessor`, `ExtensionProcessor`, `InstructionProcessor`, `ModificationProcessor`), their managers and the built-in composite conditions (`All`, `Any`, `None`) to the StableRef 4.0.0 `StableRefList<T>`, which now enumerates values instead of `StableRef<T>` wrappers. Serialized data is unaffected.
+
+### Migration
+
+- Code that iterates the public `Conditions` / `Extensions` / `Instructions` / `Modifications` lists (or the `Conditions` of a composite) now gets the values directly: `foreach (var r in processor.Conditions) Use(r.Value)` → `foreach (var c in processor.Conditions) Use(c)`; `list[i].Value` → `list[i]`. Use `list.Items` where the `StableRef<T>` entries themselves are needed.
+
 ## 3.2.0 - 05.10.2026
 
 ### Changed

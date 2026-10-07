@@ -27,10 +27,8 @@ namespace SST.Configurators
                 var extensions = processor.Extensions;
 
                 if (extensions != null)
-                    foreach (var stableRef in extensions)
+                    foreach (var value in extensions)
                     {
-                        var value = stableRef?.Value;
-
                         if (value is IHandlerBinder binder)
                             BindHandler(_handlerPool, binder);
 
@@ -52,8 +50,8 @@ namespace SST.Configurators
             if (extensions == null)
                 return;
 
-            foreach (var stableRef in extensions)
-                if (stableRef?.Value is IHandlerBinder binder)
+            foreach (var value in extensions)
+                if (value is IHandlerBinder binder)
                     ReleaseHandler(_handlerPool, binder);
         }
     }

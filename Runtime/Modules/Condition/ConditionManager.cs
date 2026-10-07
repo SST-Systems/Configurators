@@ -31,8 +31,8 @@ namespace SST.Configurators
                 {
                     var conditions = processor.Conditions;
                     if (conditions != null)
-                        foreach (var stableRef in conditions)
-                            BindConditionRecursive(stableRef?.Value, visited, currentPath);
+                        foreach (var condition in conditions)
+                            BindConditionRecursive(condition, visited, currentPath);
                 }
                 finally
                 {
@@ -57,8 +57,8 @@ namespace SST.Configurators
 
             try
             {
-                foreach (var stableRef in conditions)
-                    ReleaseConditionRecursive(stableRef?.Value, visited);
+                foreach (var condition in conditions)
+                    ReleaseConditionRecursive(condition, visited);
             }
             finally
             {
@@ -126,8 +126,8 @@ namespace SST.Configurators
                 {
                     var conditions = processor.Conditions;
                     if (conditions != null)
-                        foreach (var stableRef in conditions)
-                            BindConditionRecursive(stableRef?.Value, visited, currentPath);
+                        foreach (var condition in conditions)
+                            BindConditionRecursive(condition, visited, currentPath);
                 }
                 finally
                 {
@@ -152,8 +152,8 @@ namespace SST.Configurators
 
             try
             {
-                foreach (var stableRef in conditions)
-                    ReleaseConditionRecursive(stableRef?.Value, visited);
+                foreach (var condition in conditions)
+                    ReleaseConditionRecursive(condition, visited);
             }
             finally
             {

@@ -57,11 +57,9 @@ namespace SST.Configurators
 
         private async Task RunAsync(TContext context, CancellationToken cancellationToken)
         {
-            foreach (var stableRef in Modifications)
+            foreach (var modification in Modifications)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                var modification = stableRef?.Value;
 
                 if (modification == null)
                     continue;

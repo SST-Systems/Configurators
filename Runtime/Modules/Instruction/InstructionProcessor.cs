@@ -55,11 +55,9 @@ namespace SST.Configurators
             if (Instructions == null || Instructions.Count == 0)
                 return;
 
-            foreach (var stableRef in Instructions)
+            foreach (var instruction in Instructions)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                var instruction = stableRef?.Value;
 
                 if (instruction == null)
                     continue;

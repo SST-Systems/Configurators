@@ -32,9 +32,9 @@ namespace SST.Configurators
 
             int matches = 0;
 
-            foreach (var stableRef in Extensions)
+            foreach (var candidate in Extensions)
             {
-                if (stableRef?.Value is TExtension typed)
+                if (candidate is TExtension typed)
                 {
                     if (matches == 0)
                         extension = typed;
@@ -61,8 +61,8 @@ namespace SST.Configurators
             if (Extensions == null)
                 yield break;
 
-            foreach (var stableRef in Extensions)
-                if (stableRef?.Value is TExtension typed)
+            foreach (var candidate in Extensions)
+                if (candidate is TExtension typed)
                     yield return typed;
         }
     }
