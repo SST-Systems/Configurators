@@ -22,8 +22,8 @@ namespace SST.Configurators
             if (Conditions == null || Conditions.Count == 0)
                 return true;
 
-            foreach (var stableRef in Conditions)
-                if (!(stableRef?.Value?.IsMet() ?? true))
+            foreach (var condition in Conditions)
+                if (!(condition?.IsMet() ?? true))
                     return false;
 
             return true;
@@ -35,8 +35,8 @@ namespace SST.Configurators
             if (Conditions == null)
                 yield break;
             
-            foreach (var stableRef in Conditions)
-                yield return stableRef?.Value;
+            foreach (var condition in Conditions)
+                yield return condition;
         }
     }
 
@@ -61,8 +61,8 @@ namespace SST.Configurators
             if (Conditions == null || Conditions.Count == 0)
                 return true;
 
-            foreach (var stableRef in Conditions)
-                if (!(stableRef?.Value?.IsMet(context) ?? true))
+            foreach (var condition in Conditions)
+                if (!(condition?.IsMet(context) ?? true))
                     return false;
 
             return true;
@@ -74,8 +74,8 @@ namespace SST.Configurators
             if (Conditions == null)
                 yield break;
 
-            foreach (var stableRef in Conditions)
-                yield return stableRef?.Value;
+            foreach (var condition in Conditions)
+                yield return condition;
         }
     }
 }

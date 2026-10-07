@@ -27,10 +27,8 @@ namespace SST.Configurators
                 var instructions = processor.Instructions;
 
                 if (instructions != null)
-                    foreach (var stableRef in instructions)
+                    foreach (var value in instructions)
                     {
-                        var value = stableRef?.Value;
-
                         if (value is IHandlerBinder binder)
                             BindHandler(_handlerPool, binder);
 
@@ -49,8 +47,8 @@ namespace SST.Configurators
             if (instructions == null)
                 return;
 
-            foreach (var stableRef in instructions)
-                if (stableRef?.Value is IHandlerBinder binder)
+            foreach (var value in instructions)
+                if (value is IHandlerBinder binder)
                     ReleaseHandler(_handlerPool, binder);
         }
     }

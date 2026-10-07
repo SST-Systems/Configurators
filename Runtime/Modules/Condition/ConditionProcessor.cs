@@ -29,8 +29,8 @@ namespace SST.Configurators
                 return;
 
             if (_onChanged == null && Conditions is { Count: > 0 })
-                foreach (var stableRef in Conditions)
-                    stableRef?.Value?.AddListener(OnConditionChanged);
+                foreach (var condition in Conditions)
+                    condition?.AddListener(OnConditionChanged);
 
             _onChanged += onChanged;
 
@@ -50,8 +50,8 @@ namespace SST.Configurators
             _onChanged -= onChanged;
 
             if (_onChanged == null && Conditions is { Count: > 0 })
-                foreach (var stableRef in Conditions)
-                    stableRef?.Value?.RemoveListener(OnConditionChanged);
+                foreach (var condition in Conditions)
+                    condition?.RemoveListener(OnConditionChanged);
         }
 
         /// <summary>Removes all subscribers and unsubscribes from the underlying conditions.</summary>
@@ -61,8 +61,8 @@ namespace SST.Configurators
                 return;
 
             if (Conditions is { Count: > 0 })
-                foreach (var stableRef in Conditions)
-                    stableRef?.Value?.RemoveListener(OnConditionChanged);
+                foreach (var condition in Conditions)
+                    condition?.RemoveListener(OnConditionChanged);
 
             _onChanged = null;
         }
@@ -80,8 +80,8 @@ namespace SST.Configurators
             if (Conditions == null || Conditions.Count == 0)
                 return true;
 
-            foreach (var stableRef in Conditions)
-                if (!(stableRef?.Value?.IsMet() ?? true))
+            foreach (var condition in Conditions)
+                if (!(condition?.IsMet() ?? true))
                     return false;
 
             return true;
@@ -119,8 +119,8 @@ namespace SST.Configurators
 
             if (!_innerSubscribed && Conditions is { Count: > 0 })
             {
-                foreach (var stableRef in Conditions)
-                    stableRef?.Value?.AddListener(OnConditionChanged);
+                foreach (var condition in Conditions)
+                    condition?.AddListener(OnConditionChanged);
 
                 _innerSubscribed = true;
             }
@@ -162,8 +162,8 @@ namespace SST.Configurators
                 return;
 
             if (Conditions is { Count: > 0 })
-                foreach (var stableRef in Conditions)
-                    stableRef?.Value?.RemoveListener(OnConditionChanged);
+                foreach (var condition in Conditions)
+                    condition?.RemoveListener(OnConditionChanged);
 
             _innerSubscribed = false;
         }
@@ -202,8 +202,8 @@ namespace SST.Configurators
             if (Conditions == null || Conditions.Count == 0)
                 return true;
 
-            foreach (var stableRef in Conditions)
-                if (!(stableRef?.Value?.IsMet(context) ?? true))
+            foreach (var condition in Conditions)
+                if (!(condition?.IsMet(context) ?? true))
                     return false;
 
             return true;

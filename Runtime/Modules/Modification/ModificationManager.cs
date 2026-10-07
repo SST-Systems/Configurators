@@ -27,10 +27,8 @@ namespace SST.Configurators
                 var modifications = processor.Modifications;
 
                 if (modifications != null)
-                    foreach (var stableRef in modifications)
+                    foreach (var value in modifications)
                     {
-                        var value = stableRef?.Value;
-
                         if (value is IHandlerBinder binder)
                             BindHandler(_handlerPool, binder);
 
@@ -49,8 +47,8 @@ namespace SST.Configurators
             if (modifications == null)
                 return;
 
-            foreach (var stableRef in modifications)
-                if (stableRef?.Value is IHandlerBinder binder)
+            foreach (var value in modifications)
+                if (value is IHandlerBinder binder)
                     ReleaseHandler(_handlerPool, binder);
         }
     }
