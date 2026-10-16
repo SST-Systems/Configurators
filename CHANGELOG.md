@@ -1,5 +1,16 @@
 # Configurators
 
+## 3.4.0 - 16.10.2026
+
+### Changed
+
+- Bumped the `com.sst-systems.stableref` dependency to 5.0.0.
+- Migrated the built-in `Not` / `Not<TContext>` conditions to the StableRef 5.0.0 `StableRef<T>.Reference` property (formerly `Value`). Serialized data is unaffected.
+
+### Migration
+
+- Code that reads a `StableRef<T>` field, including `Not.Condition`, must use `.Reference` instead of `.Value`: `not.Condition.Value` → `not.Condition.Reference`. `StableRefList<T>` is unchanged.
+
 ## 3.3.0 - 07.10.2026
 
 ### Changed

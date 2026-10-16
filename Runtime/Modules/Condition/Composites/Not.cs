@@ -17,10 +17,10 @@ namespace SST.Configurators
 
         /// <summary>Returns the logical negation of the child condition.</summary>
         /// <returns><c>true</c> when the child is unsatisfied or missing.</returns>
-        public override bool IsMet() => !(Condition?.Value?.IsMet() ?? false);
+        public override bool IsMet() => !(Condition?.Reference?.IsMet() ?? false);
 
         /// <inheritdoc/>
-        public override IEnumerable<ICondition> GetConditions() { yield return Condition?.Value; }
+        public override IEnumerable<ICondition> GetConditions() { yield return Condition?.Reference; }
     }
 
     /// <summary>
@@ -39,9 +39,9 @@ namespace SST.Configurators
         /// <summary>Returns the logical negation of the child condition.</summary>
         /// <param name="context">The context to evaluate against.</param>
         /// <returns><c>true</c> when the child is unsatisfied or missing.</returns>
-        public override bool IsMet(TContext context) => !(Condition?.Value?.IsMet(context) ?? false);
+        public override bool IsMet(TContext context) => !(Condition?.Reference?.IsMet(context) ?? false);
 
         /// <inheritdoc/>
-        public override IEnumerable<ICondition<TContext>> GetConditions() { yield return Condition?.Value; }
+        public override IEnumerable<ICondition<TContext>> GetConditions() { yield return Condition?.Reference; }
     }
 }
